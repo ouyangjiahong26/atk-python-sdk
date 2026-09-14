@@ -41,8 +41,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/cislunarspace/atk-python-sdk"
-Documentation = "https://cislunarspace.github.io/atk-python-sdk"
+Homepage = "https://github.com/ouyangjiahong26/atk-python-sdk"
+Documentation = "https://ouyangjiahong26.github.io/atk-python-sdk"
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]

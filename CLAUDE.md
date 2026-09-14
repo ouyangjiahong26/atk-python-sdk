@@ -1,45 +1,44 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+本文件为 Claude Code (claude.ai/code) 在此仓库中工作时提供指引。
 
-## Build & Test Commands
+## 构建与测试命令
 
 ```bash
-uv sync --dev              # install with dev dependencies
-python -m pytest src/tests/ -v       # run all tests
-python -m pytest src/tests/test_utils.py -v                          # single file
-python -m pytest src/tests/test_utils.py::TestParseAtkTime::test_full_datetime -v  # single test
-python -m pytest src/tests/ -v --cov=src --cov-report=term-missing  # with coverage
-uv sync --extra docs && mkdocs serve  # build docs locally
+uv sync --dev              # 安装开发依赖
+uv run pytest src/tests/ -v                     # 运行全部测试
+uv run pytest src/tests/test_utils.py -v        # 单个文件
+uv run pytest src/tests/test_utils.py::TestParseAtkTime::test_full_datetime -v  # 单个测试
+uv run pytest src/tests/ -v --cov --cov-report=term-missing   # 带覆盖率
+uv sync --extra docs && uv run mkdocs serve     # 本地构建文档
 ```
 
-No linter or formatter is configured. No CI pipeline exists.
+未配置 linter 和 formatter。CI 由 `.github/workflows/` 下的 CI / Release / 部署文档三个流水线组成。
 
-## Architecture
+## 架构
 
-ATK Python SDK wraps ATK (Aerospace Tool Kit) via two independent modes:
+ATK Python SDK 通过两种相互独立的模式封装 ATK（Aerospace Tool Kit）：
 
-- **Connect mode** (`atk.connect`) — TCP to a running ATK GUI. Uses vendored SWIG bindings (`src/vendored/ATKConnectModule`). Entry: `connect()` context manager → `ATKConnection`.
-- **Component mode** (`atk.component`) — Direct DLL load, no GUI needed. Requires ATK installation (`ATK_ROOT` env). Entry: `component_session()` context manager → `ComponentSession`.
+- **Connect 模式**（`atk.connect`）— TCP 连接运行中的 ATK 图形界面。使用 vendored 的 SWIG 绑定（`src/vendored/ATKConnectModule`）。入口：`connect()` 上下文管理器 → `ATKConnection`。
+- **Component 模式**（`atk.component`）— 直接加载 DLL，无需图形界面。需要 ATK 安装（`ATK_ROOT` 环境变量）。入口：`component_session()` 上下文管理器 → `ComponentSession`。
 
-Both modes share `atk.exceptions` (hierarchy rooted at `ATKError`) and `atk.utils` (time parsing, path ops, `CMDRESULT` parsing).
+两种模式共享 `atk.exceptions`（以 `ATKError` 为根的异常层次）和 `atk.utils`（时间解析、路径操作、`CMDRESULT` 解析）。
 
-### Connect mode monkey-patching
+### Connect 模式的猴子补丁
 
-Each connect submodule (scenario, satellite, mcs, reports, coverage, constellation) calls `_patch_connection()` at import time to inject factory methods onto `ATKConnection`. This is triggered by `connect/__init__.py` importing all submodules. Do not remove those imports.
+每个 connect 子模块（scenario、satellite、facility、mcs、reports、coverage、constellation）在 import 时调用 `_patch_connection()` 向 `ATKConnection` 注入工厂方法。这由 `connect/__init__.py` 导入全部子模块触发，不要删除这些导入。
 
-### Vendored native libraries
+### Vendored 原生库
 
-`src/vendored/` contains SWIG-generated Python wrappers and platform-specific native extensions (`.pyd` for Windows, `.so` for Linux). These are ATK-provided binaries — do not modify them. The `__init__.py` re-exports SWIG functions for the SDK to import.
+`src/vendored/` 包含 SWIG 生成的 Python 封装和平台相关的原生扩展（Windows 为 `.pyd`，Linux 为 `.so`）。这些是 ATK 提供的文件，不要修改（`ATKComponentPythonModule.py` 是测试替身，可更新）。
 
-### Builder pattern
+### 构建器模式
 
-Both modes use fluent builders (`ScenarioBuilder`, `SatelliteBuilder`, `McsBuilder`). Connect mode builders wrap command strings sent over TCP. Component mode builders wrap SWIG object references (`IScenario`, `ISatellite`, `IVADriverMCS`).
+两种模式都使用流式构建器（`ScenarioBuilder`、`SatelliteBuilder`、`FacilityBuilder`、`SensorBuilder`、`McsBuilder`）。Connect 模式构建器封装经 TCP 发送的命令字符串；Component 模式构建器封装 SWIG 对象引用（`IScenario`、`ISatellite`、`IFacility`、`ISensor`、`IVADriverMCS`）。
 
-## Key Conventions
+## 关键约定
 
-- **src layout**: package code lives in `src/atk/`, tests in `src/tests/`
-- **No runtime dependencies**: the SDK has zero pip dependencies
-- **Unit tests mock SWIG**: all tests use `unittest.mock.MagicMock` to mock native bindings — no ATK installation needed to run tests
-- **Component mode tests are missing**: `src/tests/component/` has no test files yet
-- **Documentation is in Chinese**: `docs/` and `PLAN.md` are Chinese-language
+- **src 布局**：包代码在 `src/atk/`，测试在 `src/tests/`
+- **零运行时依赖**：SDK 不依赖任何 pip 包（pandas 支持是可选的运行时导入）
+- **单元测试 mock SWIG**：所有测试使用 `unittest.mock.MagicMock` 模拟原生绑定 — 运行测试无需安装 ATK
+- **文档使用中文**：`docs/`、`README.md`、注释与提交信息均为中文

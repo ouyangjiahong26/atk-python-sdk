@@ -1,7 +1,7 @@
 site_name: ATK Python SDK 文档
 site_description: ATK (Aerospace Tool Kit) Python SDK 高层次封装文档
 site_author: ATK SDK Contributors
-repo_url: https://github.com/cislunarspace/atk-python-sdk
+repo_url: https://github.com/ouyangjiahong26/atk-python-sdk
 
 theme:
   name: material
