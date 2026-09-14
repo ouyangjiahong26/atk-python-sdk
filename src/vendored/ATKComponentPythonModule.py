@@ -6,6 +6,8 @@ ATKComponentPythonModule 的测试替身（stub）。
 真实运行时请使用 ATK 安装目录中的官方模块。
 """
 
+from __future__ import annotations
+
 from unittest.mock import MagicMock
 
 
