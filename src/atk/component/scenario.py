@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from atk.component.session import _get_enum
+
 if TYPE_CHECKING:
     from atk.component.session import ComponentSession
 
@@ -133,6 +135,25 @@ class ScenarioBuilder:
         sat = children.New(_get_enum("eSatellite"), name)
         return sat
 
+    def create_facility(self, name: str) -> Any:
+        """
+        在此场景中创建新地面站。
+
+        Parameters
+        ----------
+        name : str
+            地面站名称。
+
+        Returns
+        -------
+        IFacility
+            原始 SWIG 地面站对象。
+            参见 :mod:`atk.component.facility` 获取更高级的封装。
+        """
+        children = self._scenario.GetChildren()
+        facility = children.New(_get_enum("eFacility"), name)
+        return facility
+
     def get_object(self, path: str) -> Any:
         """
         通过路径检索子对象（如 ``"Satellite/Sat1"``）。
@@ -173,12 +194,6 @@ class ScenarioBuilder:
 # ---------------------------------------------------------------------------
 # 内部辅助方法
 # ---------------------------------------------------------------------------
-
-def _get_enum(name: str) -> Any:
-    """从 ATK 模块解析传播器/对象枚举。"""
-    from atk.component import session as _s
-    return getattr(_s._ATK, name)
-
 
 def _collect_children_by_type(collection: Any, etype: Any) -> list[Any]:
     """从 IAtkObjectCollection 中收集指定类型的所有子对象。"""

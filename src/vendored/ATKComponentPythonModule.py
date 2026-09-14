@@ -1,16 +1,18 @@
 """
-Stub ATKComponentPythonModule for testing.
+ATKComponentPythonModule 的测试替身（stub）。
 
-This is a minimal mock that allows the component module to be imported
-without the actual ATK installation. It provides mock enums and the
-IAtkObjectRoot class.
+在没有 ATK 安装的环境下允许导入 component 模块：
+提供最小化的 mock 枚举和 IAtkObjectRoot 类。
+真实运行时请使用 ATK 安装目录中的官方模块。
 """
+
+from __future__ import annotations
 
 from unittest.mock import MagicMock
 
 
 class IAtkObjectRoot:
-    """Mock IAtkObjectRoot for testing."""
+    """IAtkObjectRoot 的测试替身。"""
 
     def __init__(self):
         self._scenario = None
@@ -64,4 +66,23 @@ ePropagatorLOP = "ePropagatorLOP"
 eSatellite = "eSatellite"
 eScenario = "eScenario"
 eFacility = "eFacility"
+eSensor = "eSensor"
 eCoverage = "eCoverage"
+
+# 地面站坐标类型 EPositionType
+eCartesian = "eCartesian"
+eGeodetic = "eGeodetic"
+
+# 欧拉旋转序列 EEulerOrientationSequence
+e121 = "e121"
+e123 = "e123"
+e131 = "e131"
+e132 = "e132"
+e212 = "e212"
+e213 = "e213"
+e231 = "e231"
+e232 = "e232"
+e312 = "e312"
+e313 = "e313"
+e321 = "e321"
+e323 = "e323"

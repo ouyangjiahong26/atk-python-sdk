@@ -150,6 +150,8 @@ Component 模式底层依赖 ATK 官方的 `ATKComponentPythonModule`（SWIG 封
 - **IAtkObjectRoot**：根对象，Component 入口
 - **IScenario**：场景对象
 - **ISatellite**：卫星对象
+- **IFacility**：地面站对象（含 IPosition 位置、IFaGraphics 二维属性）
+- **ISensor**：传感器对象（含 ISnCommonTasks 视场与指向设置）
 - **IVADriverMCS**：MCS 驱动器
 - **IAtkObjectCollection**：对象集合
 - **IAnimation**：仿真动画控制
@@ -166,6 +168,6 @@ Component 模式底层依赖 ATK 官方的 `ATKComponentPythonModule`（SWIG 封
 | API 风格 | 面向对象方法调用 | 命令字符串 |
 | 适用场景 | 自动化、无图形界面 | 远程控制、有图形界面 |
 | 性能 | 更快（无网络开销） | 依赖网络延迟 |
-| 地面站/传感器 | 未实现 | FacilityBuilder + SensorBuilder |
+| 地面站/传感器 | FacilityBuilder + SensorBuilder | FacilityBuilder + SensorBuilder |
 | 覆盖分析 | 未实现 | CoverageBuilder |
 | 星座模式 | 未实现 | WalkerBuilder |

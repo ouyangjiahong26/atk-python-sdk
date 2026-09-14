@@ -39,7 +39,7 @@ _STATE_PROPAGATORS = {"TwoBody", "J2Perturbation", "J4Perturbation", "HPOP", "LO
 _TLE_LINE_LENGTH = 69
 
 def _validate_tle_line(line: str, label: str) -> None:
-    """Validate TLE line is exactly 69 characters (standard CCSDS TLE format)."""
+    """校验 TLE 行长度恰为 69 字符（标准 CCSDS TLE 格式）。"""
     if not isinstance(line, str):
         raise _ex.ATKValueError(f"TLE {label} must be a string, got {type(line).__name__}")
     line_stripped = line.strip()
