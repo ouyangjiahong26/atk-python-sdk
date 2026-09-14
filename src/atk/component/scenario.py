@@ -133,6 +133,25 @@ class ScenarioBuilder:
         sat = children.New(_get_enum("eSatellite"), name)
         return sat
 
+    def create_facility(self, name: str) -> Any:
+        """
+        在此场景中创建新地面站。
+
+        Parameters
+        ----------
+        name : str
+            地面站名称。
+
+        Returns
+        -------
+        IFacility
+            原始 SWIG 地面站对象。
+            参见 :mod:`atk.component.facility` 获取更高级的封装。
+        """
+        children = self._scenario.GetChildren()
+        facility = children.New(_get_enum("eFacility"), name)
+        return facility
+
     def get_object(self, path: str) -> Any:
         """
         通过路径检索子对象（如 ``"Satellite/Sat1"``）。

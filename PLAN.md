@@ -30,6 +30,8 @@ ATK Python SDK 是 ATK (Aerospace Tool Kit) 的第三方 Python 二次开发库�
 | **Component** | 卫星构建器 (`SatelliteBuilder`) — 开普勒/笛卡尔/质量/姿态/颜色 | 已完成 |
 | **Component** | MCS 构建器 (`McsBuilder`) — 开普勒/笛卡尔/传播/脉冲/目标序列 | 已完成 |
 | **Component** | 报告导出 (`ReportExporter`) | 已完成 |
+| **Component** | 地面站构建器 (`FacilityBuilder`) — 大地/笛卡尔位置、颜色 | 已完成 |
+| **Component** | 传感器构建器 (`SensorBuilder`) — 圆锥/矩形视场、固定指向 | 已完成 |
 
 ### 测试覆盖
 
@@ -41,14 +43,16 @@ ATK Python SDK 是 ATK (Aerospace Tool Kit) 的第三方 Python 二次开发库�
 | `connect/test_satellite.py` | SatelliteBuilder |
 | `connect/test_mcs.py` | McsBuilder |
 | `connect/test_facility.py` | FacilityBuilder + SensorBuilder |
+| `component/test_session.py` | ComponentSession |
+| `component/test_satellite.py` | SatelliteBuilder（Component） |
+| `component/test_facility.py` | FacilityBuilder + SensorBuilder（Component） |
 
-Component 模式测试尚未添加（需要 ATK DLL 运行时）。
+Component 模式测试使用 mock 模拟 SWIG 接口，无需 ATK 安装即可运行。
 
 ## 下一版本计划：v0.2.0
 
 ### 待实现功能
 
-- [ ] Component 模式测试框架（Mock SWIG 接口）
 - [ ] 链 (Chain) 构建 — Connect 模式和 Component 模式
 - [ ] 飞机/船/车辆对象支持
 - [ ] Connect 模式 `get_object()` / `object_exists()` 方法

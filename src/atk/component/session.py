@@ -237,6 +237,22 @@ class ComponentSession:
         sat = children.New(_ATK.eSatellite, name)
         return sat
 
+    def create_facility(self, name: str) -> Any:
+        """
+        在当前场景中创建新地面站。
+
+        需要先加载场景。
+
+        Returns
+        -------
+        IFacility 封装（参见 ``atk.component.facility`` 获取更高级的类）。
+        """
+        if self._scenario is None:
+            raise _ex.ATKScenarioError("Create a scenario first with new_scenario() or load_scenario().")
+        children = self._scenario.GetChildren()
+        facility = children.New(_ATK.eFacility, name)
+        return facility
+
     def get_object(self, path: str) -> Any:
         """
         通过 ATK 路径检索对象（如 ``"Satellite/Sat1"``）。
