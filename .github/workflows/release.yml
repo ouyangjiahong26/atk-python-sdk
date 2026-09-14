@@ -7,35 +7,41 @@ on:
 
 permissions:
   contents: write
-  id-token: write
 
 jobs:
   release:
+    name: 语义化发布
     runs-on: ubuntu-latest
     concurrency: release
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
 
-      - name: Set up Python
+      - name: 安装 uv
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
 
-      - name: Run semantic-release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: uvx python-semantic-release version
+      - name: 安装依赖
+        run: uv sync --dev
 
-      - name: Build package
-        run: uv build
+      - name: 运行测试
+        run: uv run pytest
 
-      - name: Publish release artifacts
+      # 按提交信息（feat/fix/perf 等）计算下一版本号，
+      # 推送版本提交与 tag，并创建带 CHANGELOG 的 GitHub Release
+      - name: 语义化版本发布
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9.21.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 上传构建产物到 Release
+        if: steps.release.outputs.released == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          if [ -n "$TAG" ]; then
-            gh release upload "$TAG" dist/* --clobber
-          fi
+          uv build
+          gh release upload "${{ steps.release.outputs.tag }}" dist/* --clobber

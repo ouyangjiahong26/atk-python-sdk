@@ -1,25 +1,27 @@
-name: Deploy Docs
+name: 部署文档
 
 on:
   push:
     branches: [master]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   deploy:
+    name: 部署 MkDocs 到 GitHub Pages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 安装 uv
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
 
-      - name: Install dependencies
+      - name: 安装文档依赖
         run: uv sync --extra docs
 
-      - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy --force
+      - name: 部署到 GitHub Pages
+        run: uv run mkdocs gh-deploy --force

@@ -8,37 +8,41 @@ on:
 
 jobs:
   test:
+    name: 测试（Python ${{ matrix.python-version }}）
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: 安装 uv 并设置 Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
+          python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: 安装依赖
         run: uv sync --dev
 
-      - name: Run tests
-        run: pytest --cov=src --cov-report=term-missing
+      - name: 运行测试
+        run: uv run pytest --cov --cov-report=term-missing
 
   docs:
+    name: 构建文档
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 安装 uv
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
 
-      - name: Install docs dependencies
+      - name: 安装文档依赖
         run: uv sync --extra docs
 
-      - name: Build docs
-        run: mkdocs build
+      - name: 构建 MkDocs 文档
+        run: uv run mkdocs build
