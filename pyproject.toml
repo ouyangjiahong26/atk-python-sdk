@@ -51,9 +51,7 @@ Documentation = "https://ouyangjiahong26.github.io/atk-python-sdk"
 version_toml = ["pyproject.toml:project.version"]
 version_variables = ["src/atk/__init__.py:__version__"]
 changelog_file = "CHANGELOG.md"
-build_command = "uv build"
 upload_to_pypi = false
-remove_dist = false
 
 [tool.semantic_release.branches.master]
 match = "master"
