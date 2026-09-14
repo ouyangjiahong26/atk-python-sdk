@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from atk.component.session import _get_enum
+
 if TYPE_CHECKING:
     from atk.component.session import ComponentSession
 
@@ -192,12 +194,6 @@ class ScenarioBuilder:
 # ---------------------------------------------------------------------------
 # 内部辅助方法
 # ---------------------------------------------------------------------------
-
-def _get_enum(name: str) -> Any:
-    """从 ATK 模块解析传播器/对象枚举。"""
-    from atk.component import session as _s
-    return getattr(_s._ATK, name)
-
 
 def _collect_children_by_type(collection: Any, etype: Any) -> list[Any]:
     """从 IAtkObjectCollection 中收集指定类型的所有子对象。"""

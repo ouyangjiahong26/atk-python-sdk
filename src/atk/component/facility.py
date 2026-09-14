@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Any
 
 from atk import exceptions as _ex
+from atk.component.session import _get_enum
 
 
 # 欧拉旋转序列整数/字符串 → SWIG 枚举名（EEulerOrientationSequence）
@@ -18,12 +19,6 @@ _EULER_SEQUENCES = {
     212: "e212", 213: "e213", 231: "e231", 232: "e232",
     312: "e312", 313: "e313", 321: "e321", 323: "e323",
 }
-
-
-def _get_enum(name: str) -> Any:
-    """从 ATK Component 模块解析枚举值。"""
-    from atk.component import session as _s
-    return getattr(_s._ATK, name)
 
 
 def _resolve_euler_sequence(sequence: Any) -> Any:

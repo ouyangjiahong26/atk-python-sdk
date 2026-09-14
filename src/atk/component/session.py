@@ -102,6 +102,11 @@ def _resolve_propagator_type(name_or_enum: Any) -> Any:
     return name_or_enum
 
 
+def _get_enum(name: str) -> Any:
+    """按名称从 ATK Component 模块解析枚举值（如 ``"eSatellite"``）。"""
+    return getattr(_ATK, name)
+
+
 # ---------------------------------------------------------------------------
 # ComponentSession — IAtkObjectRoot 封装
 # ---------------------------------------------------------------------------
