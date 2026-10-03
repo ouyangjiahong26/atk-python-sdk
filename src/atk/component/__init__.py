@@ -21,7 +21,27 @@ ATKComponentPythonModule.py 位于同一目录（通常是 ATK 安装根目录�
 
 from atk.component.session import ComponentSession, component_session
 
+# 4.2 新增分析工具（导入以触发生效，类经 ComponentSession 便捷方法使用）
+from atk.component.access import AccessCalculator, AccessConstraints  # noqa: F401
+from atk.component.cat import CatAdvanceConfig, CatAnalysis  # noqa: F401
+from atk.component.constellation import ConstellationDesigner  # noqa: F401
+from atk.component.coord import BatchCoordinateTransform  # noqa: F401
+from atk.component.maneuver import (  # noqa: F401
+    ManeuverDetectionAnalysis,
+    TLEManeuverDetection,
+)
+from atk.component.vgt import VgtBuilder  # noqa: F401
+
 __all__ = [
     "ComponentSession",
     "component_session",
+    "AccessCalculator",
+    "AccessConstraints",
+    "CatAdvanceConfig",
+    "CatAnalysis",
+    "ConstellationDesigner",
+    "BatchCoordinateTransform",
+    "ManeuverDetectionAnalysis",
+    "TLEManeuverDetection",
+    "VgtBuilder",
 ]

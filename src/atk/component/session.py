@@ -288,6 +288,77 @@ class ComponentSession:
         self.root.GetAnimation().Reset()
 
     # ------------------------------------------------------------------
+    # 4.2 新增分析工具便捷方法
+    # ------------------------------------------------------------------
+
+    def constellation_designer(self) -> Any:
+        """
+        返回星座设计器（``IConstellDesign`` 封装）。
+
+        Returns
+        -------
+        atk.component.constellation.ConstellationDesigner
+        """
+        from atk.component.constellation import ConstellationDesigner
+        return ConstellationDesigner(self)
+
+    def cat_analysis(self) -> Any:
+        """
+        返回接近分析器（``ICat`` 封装）。
+
+        Returns
+        -------
+        atk.component.cat.CatAnalysis
+        """
+        from atk.component.cat import CatAnalysis
+        return CatAnalysis(self)
+
+    def batch_coord_transform(self) -> Any:
+        """
+        返回批量坐标转换器（``IATKBatchCrdnTransform`` 封装）。
+
+        Returns
+        -------
+        atk.component.coord.BatchCoordinateTransform
+        """
+        from atk.component.coord import BatchCoordinateTransform
+        return BatchCoordinateTransform(self)
+
+    def access_calculator(self, obj_path: str, target_path: str) -> Any:
+        """
+        为对象对创建可见性分析器（``IAtkAccess`` 封装）。
+
+        Parameters
+        ----------
+        obj_path : str
+            发起对象路径（如 ``"Satellite/Sat1"``）。
+        target_path : str
+            目标对象路径（如 ``"Facility/Fac1"``）。
+
+        Returns
+        -------
+        atk.component.access.AccessCalculator
+        """
+        from atk.component.access import AccessCalculator
+        return AccessCalculator(self.get_object(obj_path), target_path)
+
+    def maneuver_detection(self, sat_path: str) -> Any:
+        """
+        为卫星创建机动检测分析器（基于定轨数据）。
+
+        Parameters
+        ----------
+        sat_path : str
+            卫星路径（如 ``"Satellite/Sat1"``）。
+
+        Returns
+        -------
+        atk.component.maneuver.ManeuverDetectionAnalysis
+        """
+        from atk.component.maneuver import ManeuverDetectionAnalysis
+        return ManeuverDetectionAnalysis(self.get_object(sat_path))
+
+    # ------------------------------------------------------------------
     # 报告导出
     # ------------------------------------------------------------------
 
