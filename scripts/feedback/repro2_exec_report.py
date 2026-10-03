@@ -3,6 +3,7 @@
 用法（Linux，ATK 已启动并监听 6655，启动加载完成后运行）：
     python3 repro2_exec_report.py /path/to/ATK-4.2.0-alpha.1
 """
+import os
 import sys
 import time
 

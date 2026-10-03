@@ -23,16 +23,6 @@ COV_RM_STYLES = frozenset({
     "Coverage Gaps",
 })
 
-
-# Cov_RM 的 <ReportStyle> 合法取值（见帮助文档 Cov_RM Access 页）
-COV_RM_STYLES = frozenset({
-    "Coverage",
-    "Figure Of Merit",
-    "Satisfaction",
-    "Daily Coverage",
-    "Coverage Gaps",
-})
-
 class CoverageBuilder:
     """
     ATK CoverageDefinition 对象的流式构建器。

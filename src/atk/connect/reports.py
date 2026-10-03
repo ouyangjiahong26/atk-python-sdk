@@ -5,6 +5,8 @@ ATK Connect 模式 — 报告执行与结果解析
 （转换为 dict / pandas DataFrame）。
 """
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from atk import exceptions as _ex

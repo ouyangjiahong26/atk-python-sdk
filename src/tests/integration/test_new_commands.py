@@ -98,7 +98,6 @@ def test_step03_access_multi(atk):
     multi.compute(START, STOP)
 
 @_env_gated
-
 def test_step04_coverage_family(atk):
     """Cov 族：Interval / Access Compute / Access RM。"""
     sat, _ = _setup_scene(atk, "IntStep04")
@@ -114,7 +113,6 @@ def test_step04_coverage_family(atk):
     cov.access_clear()
 
 @_env_gated
-
 def test_step05_coverage_multi(atk):
     """CovMulti：Assets / Objects / Access Compute / MultiFOMDefine。"""
     sat, _ = _setup_scene(atk, "IntStep05")
@@ -181,7 +179,6 @@ def test_step08_walker_delta(atk):
     )
 
 @_env_gated
-
 def test_step09_quick_and_exec_report(atk):
     """QuickReportCreate/Add/GetList/GetReport + Exec_Report_RM。"""
     sat, _ = _setup_scene(atk, "IntStep09")
@@ -202,7 +199,6 @@ def test_step09_quick_and_exec_report(atk):
     assert result is not None
 
 @_env_gated
-
 def test_step10_mcs_rpo_segment(atk):
     """McsBuilder.insert_segment 插入 RPO 段。"""
     _setup_scene(atk, "IntStep10")
