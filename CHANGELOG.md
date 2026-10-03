@@ -1,64 +1,95 @@
 # CHANGELOG
 
-## v1.3.0 (2026-10-02)
 
-### Features — ATK 4.2 Connect 命令封装（xlsx R11）
+## v1.3.0 (2026-10-03)
 
-- 新增 `atk.connect.access`：`AccessBuilder`（Access / AER / Access_RM 九种报告样式）
-  与 `AccessMultiBuilder`（Assets / Objects / Access Compute 先配置后计算框架）
-- 扩展 `atk.connect.coverage`：`CoverageBuilder` 新增 `set_interval` /
-  `access_compute` / `access_clear` / `access_rm` / `fom_rm`；新增
-  `CoverageMultiBuilder`（CovMulti / CovMulti_RM MultiFOMDefine）
-- 新增 `atk.connect.vgt`：`VectorToolBuilder`（六类向量几何组件的
-  Create/Modify/Delete 与类型化便捷方法，类型表按帮助文档校验）
-- 新增 `atk.connect.cat`：`AdvCatBuilder`（ACAT 高级接近分析：
-  阈值/主次目标/时间窗/计算/SSC 文件）
-- 扩展 `atk.connect.constellation`：`ConstellationCreator`
-  （WalkerDelta / WalkerCustom / Rosette / Flower / AsymmetricFlower，
-  含种子与六要素两种形态；字面量 `Semimajoraxis`/`TureAnomaly` 按文档原文）
-- 扩展 `atk.connect.reports`：`quick_report_create/add/list/get` 与
-  `exec_report_create/rm`（ExecReport）
-- 扩展 `atk.connect.mcs`：通用 `insert_segment`（含 24 种 RPO 段类型校验）
+### Bug Fixes
 
-### Features — ATK 4.2 Component 接口封装（xlsx R12）
+- 修复评审发现的四处问题
+  ([`c4e6348`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/c4e6348f86f916007be5a67da5852ebdcc954121))
 
-- 新增 `atk.component.access`：`AccessCalculator`（计算/区间/23 种报告
-  枚举/约束管理）与 `AccessConstraints`
-- 新增 `atk.component.vgt`：`VgtBuilder`（六个组件组的创建/删除/查询与
-  位移向量、叉积向量、两向量夹角便捷方法）
-- 新增 `atk.component.constellation`：`ConstellationDesigner`
-  （12 个星座设计方法，int 参数按 SWIG typemap 转换）
-- 新增 `atk.component.cat`：`CatAnalysis`（场景/TLE 目标、时间窗、计算、
-  12 项结果向量）与 `CatAdvanceConfig`（滤波器与门限）
-- 新增 `atk.component.coord`：`BatchCoordinateTransform`
-  （时间类型/坐标系/单位/数据列序 vector_EDataSequence/导入导出）
-- 新增 `atk.component.maneuver`：`ManeuverDetectionAnalysis`（POD 变体，
-  受上游 SWIG `std::string&` 出参缺陷限制）与 `TLEManeuverDetection`
-  （TLE 历史机动检测，4.2.0-alpha.1 下可正常调用）
-- `ComponentSession` 新增 `constellation_designer` / `cat_analysis` /
-  `batch_coord_transform` / `access_calculator` / `maneuver_detection`
-  便捷方法；vendored 测试替身同步增补指针/向量助手与新枚举
+- coverage.py：删除误留的 COV_RM_STYLES 重复定义块 - reports.py：补回被误删的 from __future__ import annotations
+  （requires-python >=3.9 下 str | None 注解需要延迟求值） - session.pyi：补回被误删的 send_str 存根与 McsBuilder 导入 -
+  repro2_exec_report.py：补 import os；test_new_commands.py 清理 装饰器与 def 间空行
 
-### Tests
+- 补回 session.pyi 误删的 ReportResult 导入与 send_retry 存根
+  ([`15cc477`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/15cc477a5ca93918becd3e8ef82eb73563b41c8e))
 
-- Connect/Component 新增 mock 单测（命令三元组精确断言 + SWIG 调用序列 +
-  非法参数负例），套件由 93 增至 202 个用例
-- 新增集成测试 `src/tests/integration/test_new_commands.py`
-  （step01-10，`ATK_INTEGRATION=1` 门控）与 `scripts/run_integration.sh`
-  （wine 环境下逐用例重启 ATK 保证确定性）
-- 新增 wine Component 冒烟脚本 `scripts/wine/run_all.sh`
-  （真实 ATKComponentPythonModule 下逐项 PASS/FAIL）
+### Chores
 
-### Known Issues（ATK 4.2.0-alpha.1 上游限制）
+- 移除 docs/superpowers，该工具不再使用
+  ([`2beded1`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/2beded1d0ec8eb41bec2fe07c83d4d3e19006b1c))
 
-- Exec_Report 族命令 ACK 但不返回数据（文件输出未实现）
-- `IMnvPODDataBaseDetection.Compute` 的 `strDetectDVutc` 为
-  `std::string&` 出参，Python 无法构造兼容对象，POD 机动检测不可调用
-  （改用 TLE 变体验证机动分析）
-- Connect 命令层工程适配（非缺陷）：命令发送需保持间隔（连发会
-  NACK）、启动加载完成前部分命令暂不可用。SDK 新增
-  ``ATKConnection.wait_ready()`` 与 ``send_retry()``（节流 + NACK
-  退避重试），集成测试按 200ms 节流 + 自动重试执行
+### Documentation
+
+- Readme 添加徽章，补充 MIT LICENSE 文件
+  ([`f8f7d11`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/f8f7d112c90e2ddb7529870b84986ef5f5d39123))
+
+- 更新 4.2 命令参考与 CHANGELOG，版本升至 1.3.0
+  ([`755fa77`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/755fa7712bbe6cebdb21dc594d1940c9af7adee6))
+
+- docs/reference/atk-commands.md：增补 4.2 全部新命令语法与示例 （Access/AER/Access_RM/AccessMulti/Cov
+  族/CovMulti/VectorTool/ ACAT/星座创建族/QuickReport 族/Exec_Report/RPO 段类型） - CHANGELOG
+  v1.3.0：两批次特性、测试与上游限制清单 - 版本 1.2.0 → 1.3.0
+
+### Features
+
+- **component**: 封装 ATK 4.2 新增 Component 接口
+  ([`b1ad493`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/b1ad493882edefdfe35217c681889d71d2e2f8de))
+
+- 新增 access.py：AccessCalculator（IAtkAccess：计算/区间/23 种报告 枚举/约束管理）与 AccessConstraints - 新增
+  vgt.py：VgtBuilder（六个组件组的创建/删除/查询，位移向量/ 叉积/两向量夹角便捷方法，枚举名短名模糊解析） - 新增
+  constellation.py：ConstellationDesigner（12 个星座设计方法， int 参数按 SWIG typemap 实测转换） - 新增
+  cat.py：CatAnalysis（场景/TLE 目标、时间窗、计算、12 项结果 向量）与 CatAdvanceConfig（滤波器与门限） - 新增
+  coord.py：BatchCoordinateTransform（时间类型/坐标系/单位/ vector_EDataSequence 数据列序/导入导出） - 新增
+  maneuver.py：ManeuverDetectionAnalysis（POD 变体，strDetectDVutc 为 std::string& 出参在 4.2.0-alpha.1
+  不可调用，转译为带替代方案的 明确报错）与 TLEManeuverDetection（TLE 历史机动检测，出参 vector<string>+vector<double>，可正常调用） -
+  ComponentSession 新增 constellation_designer/cat_analysis/
+  batch_coord_transform/access_calculator/maneuver_detection 便捷方法 - vendored 测试替身增补：指针与 SWIG
+  向量助手、eACCESS_*/VGT/时间 类型等新枚举、根类 GetCat/GetConstellDesign/GetBatchCrdnTransform
+
+- **connect**: 封装 ATK 4.2 新增 Connect 命令
+  ([`6a32f44`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/6a32f44c31b80e6b199ca7d1a17792e3a8039d53))
+
+- 新增 access.py：AccessBuilder（Access/AER/Access_RM 九种报告样式， 样式非法抛 ATKValueError）与
+  AccessMultiBuilder（Assets/Objects/ Access Compute 先配置后计算框架） - 新增
+  vgt.py：VectorToolBuilder（六类向量几何组件的 Create/Modify/ Delete，类型表按帮助文档校验，附位移向量/叉积/两向量夹角便捷方法） - 新增
+  cat.py：AdvCatBuilder（ACAT 高级接近分析：阈值/主次目标/ 时间窗/Compute/SSCFile） - 扩展
+  coverage.py：set_interval/access_compute/access_clear/access_rm/ fom_rm；新增
+  CoverageMultiBuilder（CovMulti/CovMulti_RM） - 扩展 constellation.py：ConstellationCreator（WalkerDelta/
+  WalkerCustom/Rosette/Flower/AsymmetricFlower，种子与六要素两种形态， Semimajoraxis/TureAnomaly 按文档原文拼写） - 扩展
+  reports.py：quick_report_create/add/list/get 与 exec_report_create/rm（ExecReport） - 扩展 mcs.py：通用
+  insert_segment（含 24 种 RPO 段类型校验） - session.py 新增 wait_ready()/send_retry()：命令节流 + NACK 退避
+  重试（Connect 服务端对命令速率敏感、启动加载完成前部分命令暂不可用）
+
+### Refactoring
+
+- 统一时间区间参数的成对校验语义
+  ([`6d50b89`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/6d50b891879b448601cc0207dd351d2d2acad6f3))
+
+utils 新增 validate_time_pair：start/stop 必须成对提供，否则抛
+  ATKValueError。access.py（_time_param/_interval_param）、coverage.py （access_rm，修复单传 stop
+  被静默忽略）、reports.py（ExecReport ._options）三处统一改用该助手，消除同形逻辑的三份实现与行为分叉； 补负例单测
+
+### Testing
+
+- 新增 4.2 封装的 mock 单测与真实 ATK 集成测试
+  ([`f3c6073`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/f3c6073c964b6bca0962f827a1f661d11046a326))
+
+- Connect：test_access/test_vgt/test_cat/test_constellation_reports， 扩展
+  test_coverage/test_mcs/test_session（期望工厂方法清单）， 断言命令三元组精确匹配与非法参数负例（mock，无 ATK 可跑） -
+  Component：test_new_modules 覆盖六个新模块的 SWIG 调用序列与 TLEManeuverDetection 出参归一化 -
+  集成：src/tests/integration（ATK_INTEGRATION=1 门控），conftest 按 200ms 节流 + NACK 自动重试（Connect
+  服务端速率敏感），RPO 等 命令在 wine 部分实例不可用时环境门控 skip（非缺陷） - mock 套件由 93 增至 207 个用例
+
+- 新增集成 runner 与 wine Component 冒烟脚本
+  ([`9f6318d`](https://github.com/ouyangjiahong26/atk-python-sdk/commit/9f6318ddab2fff4d91a8b5d397c2e418d52663aa))
+
+- scripts/run_integration.sh：启动 wine ATK → 预热 → 分组执行集成 套件（规避连接数上限），内嵌实测工程注意事项说明 -
+  scripts/integration_canary.py：命令就绪探测 - scripts/wine/run_all.sh + component_smoke.py：在真实
+  ATKComponentPythonModule 下逐项 PASS/FAIL（9 PASS + 1 LIMITED 上游缺陷），覆盖 xlsx R12 全部接口与 RPO 段插入 -
+  scripts/feedback/：ATK 上游问题反馈材料（POD string& 出参、 Exec_Report 空返回），复现脚本只依赖 ATK 自带模块
+
 
 ## v1.2.0 (2026-09-14)
 
