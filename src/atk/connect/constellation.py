@@ -232,6 +232,340 @@ class WalkerBuilder:
         )
 
 
+class ConstellationCreator:
+    """
+    Connect 模式下 ATK 4.2 星座创建命令族的封装。
+
+    与 :class:`WalkerBuilder`（SDK 侧逐星生成）不同，本类直接调用
+    ATK 服务端的星座创建命令（WalkerDelta / WalkerCustom / Rosette /
+    Flower / AsymmetricFlower），由 ATK 一次性生成整个星座。
+
+    通过 ``atk.constellation_creator()`` 创建。
+
+    每种星座均有两种形态：
+
+    - ``*_from_seed``：以已有卫星为种子（命令对象路径指向该卫星）；
+    - ``*_from_elements``：直接给定轨道六要素（对象路径为 ``/``）。
+
+    注意：``Semimajoraxis``、``TureAnomaly`` 为 ATK 文档命令原文的
+    拼写（ATK 自身的拼写习惯），此处按文档字面量发送。
+
+    示例::
+
+        creator = atk.constellation_creator()
+        creator.walker_delta_from_elements(
+            sma=6678137, ecc=0, inc=28.5, raan=0, argp=180, ta=180,
+            num_planes=2, sats_per_plane=8,
+            inter_plane_phase=1, raan_spread=360, color_by_plane=True,
+        )
+    """
+
+    def __init__(self, conn: "ATKConnection"):
+        self._conn = conn
+
+    @staticmethod
+    def _color(color_by_plane: bool) -> str:
+        return f" ColorByPlane {'Yes' if color_by_plane else 'No'}"
+
+    @staticmethod
+    def _elements(
+        sma: float, ecc: float, inc: float,
+        raan: float, argp: float, ta: float,
+    ) -> str:
+        # 字面量 Semimajoraxis / TureAnomaly 为 ATK 文档原文拼写
+        return (
+            f"Semimajoraxis {sma} Eccentricity {ecc} Inclination {inc} "
+            f"RAAN {raan} ArgumentOfPerigee {argp} TureAnomaly {ta}"
+        )
+
+    # ------------------------------------------------------------------
+    # WalkerDelta
+    # ------------------------------------------------------------------
+
+    def walker_delta_from_seed(
+        self,
+        seed_path: str,
+        num_planes: int,
+        sats_per_plane: int,
+        inter_plane_phase: float,
+        raan_spread: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """
+        以已有卫星为种子创建 WalkerDelta 星座。
+
+        对应命令 ``WalkerDelta <SeedPath> NumPlanes <n> NumSatsPerPlane <m>
+        InterPlanePhaseIncrement <p> RAANSpread <r> ColorByPlane {Yes|No}``。
+        """
+        param = (
+            f"NumPlanes {num_planes} NumSatsPerPlane {sats_per_plane} "
+            f"InterPlanePhaseIncrement {inter_plane_phase} "
+            f"RAANSpread {raan_spread}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send(
+            "WalkerDelta", utils.resolve_path(seed_path), f" {param}"
+        )
+        return self
+
+    def walker_delta_from_elements(
+        self,
+        sma: float,
+        ecc: float,
+        inc: float,
+        raan: float,
+        argp: float,
+        ta: float,
+        num_planes: int,
+        sats_per_plane: int,
+        inter_plane_phase: float,
+        raan_spread: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """
+        直接以轨道六要素创建 WalkerDelta 星座（新卫星）。
+
+        单位：半长轴米，角度度。
+        """
+        param = (
+            self._elements(sma, ecc, inc, raan, argp, ta)
+            + f" NumPlanes {num_planes} NumSatsPerPlane {sats_per_plane}"
+            f" InterPlanePhaseIncrement {inter_plane_phase}"
+            f" RAANSpread {raan_spread}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send("WalkerDelta", "/", f" {param}")
+        return self
+
+    # ------------------------------------------------------------------
+    # WalkerCustom
+    # ------------------------------------------------------------------
+
+    def walker_custom_from_seed(
+        self,
+        seed_path: str,
+        num_planes: int,
+        total_sats: int,
+        inter_plane_true_anomaly_increment: float,
+        raan_increment: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """
+        以已有卫星为种子创建 WalkerCustom 星座。
+
+        对应命令 ``WalkerCustom <SeedPath> NumPlanes <n> TotalNumSats <m>
+        InterPlaneTrueAnomalyIncrement <p> RAANIncrement <r>
+        ColorByPlane {Yes|No}``。
+        """
+        param = (
+            f"NumPlanes {num_planes} TotalNumSats {total_sats} "
+            f"InterPlaneTrueAnomalyIncrement "
+            f"{inter_plane_true_anomaly_increment} "
+            f"RAANIncrement {raan_increment}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send(
+            "WalkerCustom", utils.resolve_path(seed_path), f" {param}"
+        )
+        return self
+
+    def walker_custom_from_elements(
+        self,
+        sma: float,
+        ecc: float,
+        inc: float,
+        raan: float,
+        argp: float,
+        ta: float,
+        num_planes: int,
+        total_sats: int,
+        inter_plane_true_anomaly_increment: float,
+        raan_increment: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """直接以轨道六要素创建 WalkerCustom 星座（新卫星）。"""
+        param = (
+            self._elements(sma, ecc, inc, raan, argp, ta)
+            + f" NumPlanes {num_planes} TotalNumSats {total_sats}"
+            f" InterPlaneTrueAnomalyIncrement "
+            f"{inter_plane_true_anomaly_increment}"
+            f" RAANIncrement {raan_increment}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send("WalkerCustom", "/", f" {param}")
+        return self
+
+    # ------------------------------------------------------------------
+    # Rosette
+    # ------------------------------------------------------------------
+
+    def rosette_from_seed(
+        self,
+        seed_path: str,
+        num_planes: int,
+        total_sats: int,
+        molecule: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """
+        以已有卫星为种子创建 Rosette 星座。
+
+        对应命令 ``Rosette <SeedPath> NumPlanes <n> TotalNumSats <m>
+        Molecule <v> ColorByPlane {Yes|No}``。
+        """
+        param = (
+            f"NumPlanes {num_planes} TotalNumSats {total_sats} "
+            f"Molecule {molecule}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send(
+            "Rosette", utils.resolve_path(seed_path), f" {param}"
+        )
+        return self
+
+    def rosette_from_elements(
+        self,
+        sma: float,
+        ecc: float,
+        inc: float,
+        raan: float,
+        argp: float,
+        ta: float,
+        num_planes: int,
+        total_sats: int,
+        molecule: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """直接以轨道六要素创建 Rosette 星座（新卫星）。"""
+        param = (
+            self._elements(sma, ecc, inc, raan, argp, ta)
+            + f" NumPlanes {num_planes} TotalNumSats {total_sats}"
+            f" Molecule {molecule}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send("Rosette", "/", f" {param}")
+        return self
+
+    # ------------------------------------------------------------------
+    # Flower
+    # ------------------------------------------------------------------
+
+    def flower_from_seed(
+        self,
+        seed_path: str,
+        total_sats: int,
+        inter_plane_phase: float,
+        return_circle: float,
+        return_day: float,
+        phase_density: float,
+        raan_spread: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """
+        以已有卫星为种子创建 Flower 星座。
+
+        对应命令 ``Flower <SeedPath> TotalNumSats <n>
+        InterPlanePhaseIncrement <p> ReturnCircle <c> ReturnDay <d>
+        PhaseDensity <v> RAANSpread <r> ColorByPlane {Yes|No}``。
+        """
+        param = (
+            f"TotalNumSats {total_sats} "
+            f"InterPlanePhaseIncrement {inter_plane_phase} "
+            f"ReturnCircle {return_circle} ReturnDay {return_day} "
+            f"PhaseDensity {phase_density} RAANSpread {raan_spread}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send("Flower", utils.resolve_path(seed_path), f" {param}")
+        return self
+
+    def flower_from_elements(
+        self,
+        sma: float,
+        ecc: float,
+        inc: float,
+        raan: float,
+        argp: float,
+        ta: float,
+        total_sats: int,
+        inter_plane_phase: float,
+        return_circle: float,
+        return_day: float,
+        phase_density: float,
+        raan_spread: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """直接以轨道六要素创建 Flower 星座（新卫星）。"""
+        param = (
+            self._elements(sma, ecc, inc, raan, argp, ta)
+            + f" TotalNumSats {total_sats}"
+            f" InterPlanePhaseIncrement {inter_plane_phase}"
+            f" ReturnCircle {return_circle} ReturnDay {return_day}"
+            f" PhaseDensity {phase_density} RAANSpread {raan_spread}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send("Flower", "/", f" {param}")
+        return self
+
+    # ------------------------------------------------------------------
+    # AsymmetricFlower
+    # ------------------------------------------------------------------
+
+    def asymmetric_flower_from_seed(
+        self,
+        seed_path: str,
+        total_sats: int,
+        return_circle: float,
+        return_day: float,
+        raan_increment: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """
+        以已有卫星为种子创建 AsymmetricFlower 星座。
+
+        对应命令 ``AsymmetricFlower <SeedPath> TotalNumSats <n>
+        ReturnCircle <c> ReturnDay <d> RAANIncrement <r>
+        ColorByPlane {Yes|No}``。
+        """
+        param = (
+            f"TotalNumSats {total_sats} "
+            f"ReturnCircle {return_circle} ReturnDay {return_day} "
+            f"RAANIncrement {raan_increment}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send(
+            "AsymmetricFlower", utils.resolve_path(seed_path), f" {param}"
+        )
+        return self
+
+    def asymmetric_flower_from_elements(
+        self,
+        sma: float,
+        ecc: float,
+        inc: float,
+        raan: float,
+        argp: float,
+        ta: float,
+        total_sats: int,
+        return_circle: float,
+        return_day: float,
+        raan_increment: float,
+        color_by_plane: bool = False,
+    ) -> "ConstellationCreator":
+        """直接以轨道六要素创建 AsymmetricFlower 星座（新卫星）。"""
+        param = (
+            self._elements(sma, ecc, inc, raan, argp, ta)
+            + f" TotalNumSats {total_sats}"
+            f" ReturnCircle {return_circle} ReturnDay {return_day}"
+            f" RAANIncrement {raan_increment}"
+            + self._color(color_by_plane)
+        )
+        self._conn.send("AsymmetricFlower", "/", f" {param}")
+        return self
+
+    def __repr__(self) -> str:
+        return "<ConstellationCreator>"
+
+
 # ---------------------------------------------------------------------------
 # 将 constellation_builder() 添加到 ATKConnection
 # ---------------------------------------------------------------------------
@@ -244,6 +578,7 @@ def _patch_connection():
         return WalkerBuilder(self, name)
 
     _s.ATKConnection.constellation_builder = constellation_builder
+    _s.ATKConnection.constellation_creator = lambda self: ConstellationCreator(self)
 
 
 _patch_connection()

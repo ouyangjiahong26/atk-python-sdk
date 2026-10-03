@@ -1,4 +1,9 @@
 # atk-python-sdk
+![CI](https://github.com/ouyangjiahong26/atk-python-sdk/actions/workflows/ci.yml/badge.svg)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://github.com/ouyangjiahong26/atk-python-sdk/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-informational.svg)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/ouyangjiahong26/atk-python-sdk.svg)](https://github.com/ouyangjiahong26/atk-python-sdk/stargazers)
+[![Docs](https://img.shields.io/badge/docs-GitHub_Pages-brightgreen.svg)](https://ouyangjiahong26.github.io/atk-python-sdk)
 
 atk-python-sdk 是社区整理的 [ATK（Aerospace Tool Kit）](https://www.osredm.com/atknudt/atk/about) 二次开发包，在官方 Connect 协议和 Component 接口之上提供构建器风格的 Python API、完整异常层次和报告解析工具。
 

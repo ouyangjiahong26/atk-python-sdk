@@ -90,3 +90,48 @@ class TestMcsBuilder:
 
         mcs.propagate_until("10 Jan 2024")
         assert mcs.get_segment_count() == 2
+
+
+class TestInsertSegment:
+    """4.2 新增：通用 insert_segment（含 RPO 段）。"""
+
+    def test_insert_rpo_segment_known_type(self) -> None:
+        import warnings
+        from atk.connect.mcs import McsBuilder
+
+        conn = MockATKConnection()
+        mcs = McsBuilder(conn, "*/Satellite/Sat1")
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            mcs.insert_segment("ConeApproach")
+
+        assert conn.calls[-1] == (
+            "InsertSegment", "*/Satellite/Sat1", " ConeApproach Segment_0"
+        )
+        assert mcs.get_segment_count() == 1
+
+    def test_insert_segment_with_custom_name(self) -> None:
+        from atk.connect.mcs import McsBuilder
+
+        conn = MockATKConnection()
+        mcs = McsBuilder(conn, "*/Satellite/Sat1")
+        mcs.insert_segment("FastRendezvous", name="MySeg")
+
+        assert conn.calls[-1] == (
+            "InsertSegment", "*/Satellite/Sat1", " FastRendezvous MySeg"
+        )
+
+    def test_unknown_segment_type_warns_but_passes_through(self) -> None:
+        import warnings
+        from atk.connect.mcs import McsBuilder
+
+        conn = MockATKConnection()
+        mcs = McsBuilder(conn, "*/Satellite/Sat1")
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            mcs.insert_segment("WeirdType")
+
+        assert len(caught) == 1
+        assert conn.calls[-1] == (
+            "InsertSegment", "*/Satellite/Sat1", " WeirdType Segment_0"
+        )

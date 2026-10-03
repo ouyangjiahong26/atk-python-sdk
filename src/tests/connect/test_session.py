@@ -149,7 +149,80 @@ class TestConnectionPatching:
             "mcs_builder",
             "create_facility",
             "create_coverage",
+            "constellation_builder",
+            "quick_report",
+            "report_rm",
+            # 4.2 newly added factories
+            "access_builder",
+            "access_multi",
+            "coverage_multi",
+            "vector_tool",
+            "create_adv_cat",
+            "constellation_creator",
+            "quick_report_create",
+            "quick_report_add",
+            "quick_report_list",
+            "quick_report_get",
+            "exec_report_create",
+            "exec_report_rm",
         ]
         for method_name in expected_methods:
             assert hasattr(session.ATKConnection, method_name), \
                 f"ATKConnection missing method: {method_name}"
+
+
+class TestSendRetryAndWaitReady:
+    """send_retry / wait_ready（节流 + NACK 退避重试）的测试。"""
+
+    def test_send_retry_returns_on_first_success(self) -> None:
+        from unittest.mock import patch
+        from atk.connect.session import ATKConnection
+        with patch("atk.connect.session._ATK") as mock_atk:
+            ok = MagicMock()
+            ok.m_vectData = "ACK"
+            mock_atk.atkConnect.return_value = ok
+            conn = ATKConnection(con_id=1, host="127.0.0.1", port=6655)
+            result = conn.send_retry("New", "/", " Scenario S", interval=0.0)
+            assert result is ok
+            mock_atk.atkConnect.assert_called_once()
+
+    def test_send_retry_retries_on_nack_then_raises(self) -> None:
+        from unittest.mock import patch
+        from atk.connect.session import ATKConnection
+        with patch("atk.connect.session._ATK") as mock_atk:
+            mock_atk.atkConnect.return_value = "NACK"
+            conn = ATKConnection(con_id=1, host="127.0.0.1", port=6655)
+            with pytest.raises(atk_exc.ATKCommandError):
+                conn.send_retry(
+                    "New", "/", " Scenario S", retries=2, interval=0.0
+                )
+            assert mock_atk.atkConnect.call_count == 3  # 1 + 2 重试
+
+    def test_send_retry_recovers_after_transient_nack(self) -> None:
+        from unittest.mock import patch
+        from atk.connect.session import ATKConnection
+        with patch("atk.connect.session._ATK") as mock_atk:
+            ok = MagicMock()
+            ok.m_vectData = "ACK"
+            mock_atk.atkConnect.side_effect = ["NACK", "NACK", ok]
+            conn = ATKConnection(con_id=1, host="127.0.0.1", port=6655)
+            result = conn.send_retry(
+                "New", "/", " Scenario S", retries=3, interval=0.0
+            )
+            assert result is ok
+
+    def test_wait_ready_returns_true_when_command_ok(self) -> None:
+        from unittest.mock import patch
+        from atk.connect.session import ATKConnection
+        with patch("atk.connect.session._ATK") as mock_atk:
+            mock_atk.atkConnect.return_value = "Scenario1"
+            conn = ATKConnection(con_id=1, host="127.0.0.1", port=6655)
+            assert conn.wait_ready(timeout=1.0, interval=0.0) is True
+
+    def test_wait_ready_returns_false_on_timeout(self) -> None:
+        from unittest.mock import patch
+        from atk.connect.session import ATKConnection
+        with patch("atk.connect.session._ATK") as mock_atk:
+            mock_atk.atkConnect.return_value = "NACK"
+            conn = ATKConnection(con_id=1, host="127.0.0.1", port=6655)
+            assert conn.wait_ready(timeout=0.05, interval=0.0) is False

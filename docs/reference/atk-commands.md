@@ -505,3 +505,175 @@ Units_SetConnect / Date JDate                        # 日期格式
 Units_SetConnect / Distance km                       # 距离单位
 Units_SetConnect / Time sec                          # 时间单位
 ```
+
+## ATK 4.2 新增命令
+
+以下命令在 ATK 4.2 中提供，SDK 侧对应封装见各 `atk.connect` 子模块。
+
+### AER — 可见性视线参数报告
+
+```connect
+AER <ObjectPath> <AccessObjectPath> {TimePeriod <StartTime> <StopTime>}
+```
+
+**示例**：
+```connect
+AER */Satellite/Satellite1 */Facility/Station1 TimePeriod "14 Mar 2024 00:00:00.000" "15 Mar 2024 00:00:00.000"
+```
+
+### Access_RM — 获取可见性报告（9 种样式）
+
+```connect
+Access_RM <ObjectPath> Access Compute "<ReportStyle>" [{TimeIntervals} | UseObjectTimes]
+```
+
+`<ReportStyle>` 取值：`Access` / `AER` / `AER Rate` / `UnAccessible` / `UnAccessible AER` /
+`Access Summary` / `AER Summary` / `UnAccessible Summary` / `Range Rate`。
+
+**示例**：
+```connect
+Access_RM */Satellite/Satellite1 Access Compute "Range Rate" "14 Mar 2024 00:00:00.000" "15 Mar 2024 00:00:00.000"
+```
+
+### AccessMulti — 批量可见性（先配置后计算）
+
+```connect
+AccessMulti / Assets <AssetObjectPath>...
+AccessMulti / Objects <CovObjectPath>...
+AccessMulti / Access Compute [{TimeInterval} | UseObjectTimes]
+```
+
+**示例**：
+```connect
+AccessMulti / Assets */Satellite/Satellite1/Sensor/Sensor1 */Satellite/Satellite2/Sensor/Sensor1
+AccessMulti / Objects */Facility/Target1 */Facility/Target2
+AccessMulti / Access Compute "26 Sep 2035 12:00:00.00" "28 Sep 2035 12:00:00.00"
+```
+
+### Cov 族 4.2 新增子命令
+
+```connect
+Cov <CovDefnObjectPath> Interval "<Start>" "<Stop>"
+Cov <ObjectPath> Access Compute [{TimeInterval} | UseObjectTimes]
+Cov <ObjectPath> Access Clear
+Cov_RM <CovDefnObjectPath> FOMDefine Definition <FOMType> {Parameters}
+```
+
+`Cov_RM Access` 的样式取值：`Coverage` / `Figure Of Merit` / `Satisfaction` /
+`Daily Coverage` / `Coverage Gaps`。
+
+**示例**：
+```connect
+Cov */CoverageDefinition/Coverage1 Interval "20 Jun 2024 04:00:00.00" "21 Jun 2024 04:00:00.00"
+Cov_RM */Satellite/Satellite1 FOMDefine Definition CoverageTime Compute Total
+```
+
+### CovMulti / CovMulti_RM — 批量覆盖
+
+```connect
+CovMulti / Assets <AssetObjectPath>...
+CovMulti / Objects <CovObjectPath>...
+CovMulti / Access Compute [{TimeInterval} | UseObjectTimes]
+CovMulti_RM / MultiFOMDefine Definition <FOMType> {Parameters}
+```
+
+**示例**：
+```connect
+CovMulti_RM / MultiFOMDefine Definition RevisitTime Compute maximum
+```
+
+### VectorTool — 向量几何组件
+
+```connect
+VectorTool * <ParentObject> {Create|Modify|Delete} {Kind} <Name> ["<Type>" <TypeParams>]
+```
+
+`{Kind}` 为 `Vector` / `Angle` / `Axes` / `Plane` / `Point` / `System`，
+各 Kind 的合法 `<Type>` 见帮助文档 VectorTool 分页。
+
+**示例**：
+```connect
+VectorTool * Satellite/Satellite1 Create Vector V1 "Displacement" "CentralBody/Earth ICRF.Origin" "CentralBody/Moon ICRF.Origin" On On Transmit "CentralBody/Earth J2000"
+VectorTool * Satellite/Satellite1 Create Angle A1 "Between Vectors" "CentralBody/Earth ICRF.Axes.X" "Satellite/Satellite2 VVLH.Axes.Y"
+VectorTool * Satellite/Satellite1 Delete Vector V1
+```
+
+### ACAT — 高级接近分析
+
+```connect
+New / AdvCat <Name>
+ACAT <AdvCatObjPath> Threshold <DistanceValue>
+ACAT <AdvCatObjPath> {Primary|Secondary} Add "<ObjPath>" Fixed <T> <C> <N> [HardBodyRadius <R>]
+ACAT <AdvCatObjPath> {Primary|Secondary}Multi Add "<T1 T2 ...>" Fixed <T> <C> <N>
+ACAT <AdvCatObjPath> {Primary|Secondary} Remove "<ObjPath>"
+ACAT <AdvCatObjPath> {Primary|Secondary} RemoveAll
+ACAT <AdvCatObjPath> TimePeriod "<Start>" "<Stop>"
+ACAT <AdvCatObjPath> Compute On
+ACAT <AdvCatObjPath> SSCFile {On | Off | "<FilePath>"}
+```
+
+**示例**：
+```connect
+ACAT */AdvCat/AdvCat1 Primary Add "Satellite/Satellite1" Fixed 21000.0 11000.0 6000.0
+ACAT */AdvCat/AdvCat1 Compute On
+```
+
+### 星座创建族 — WalkerDelta / WalkerCustom / Rosette / Flower / AsymmetricFlower
+
+```connect
+WalkerDelta / Semimajoraxis <sma> Eccentricity <e> Inclination <i> RAAN <r> ArgumentOfPerigee <a> TureAnomaly <t> NumPlanes <n> NumSatsPerPlane <m> InterPlanePhaseIncrement <p> RAANSpread <r> ColorByPlane {Yes|No}
+WalkerDelta <SeedPath> NumPlanes <n> NumSatsPerPlane <m> InterPlanePhaseIncrement <p> RAANSpread <r> ColorByPlane {Yes|No}
+```
+
+注意：`Semimajoraxis`、`TureAnomaly` 为 ATK 文档原文拼写（非笔误）。
+其余四族命令的选项集见帮助文档对应分页。
+
+**示例**：
+```connect
+WalkerDelta / Semimajoraxis 6678137 Eccentricity 0 Inclination 28.5 RAAN 0 ArgumentOfPerigee 180 TureAnomaly 180 NumPlanes 2 NumSatsPerPlane 8 InterPlanePhaseIncrement 1 RAANSpread 360 ColorByPlane Yes
+Rosette */Satellite/Satellite1 NumPlanes 20 TotalNumSats 20 Molecule 1 ColorByPlane Yes
+```
+
+### QuickReportCreate / QuickReportAdd / QuickReport_RM — 快捷报告
+
+```connect
+QuickReportCreate <ScenarioPath> "<QuickReportName>"
+QuickReportAdd <ScenarioPath> Name "<QuickReportName>" Type Report Style "<StyleName>" Object <TruncObjPath> [FromObject <TruncObjPath>]
+QuickReport_RM <ScenarioPath> {GetList | GetReport "<QuickReportName>"}
+```
+
+**示例**：
+```connect
+QuickReportCreate * "J2000 Position Velocity"
+QuickReportAdd * Name "Sat Pos-Vel" Type Report Style "J2000 Position Velocity" Object Satellite/Satellite1
+QuickReport_RM * GetReport "Sat Pos-Vel"
+```
+
+### Exec_ReportCreate / Exec_Report_RM — 报告创建与取数
+
+```connect
+Exec_ReportCreate <ObjectPath> Style "<StyleName>" [File "<FilePath>"] [TimePeriod "<Start>" "<Stop>"] [TimeStep <Value>]
+Exec_Report_RM <ObjectPath> Style "<StyleName>" [TimePeriod "<Start>" "<Stop>"] [TimeStep <Value>]
+```
+
+**示例**：
+```connect
+Exec_ReportCreate */Satellite/Satellite1 Style "Position" File "linshi.rsf" TimePeriod "2023-07-29 09:19:01.000" "2023-07-29 10:09:38.000"
+Exec_Report_RM */Satellite/Satellite1 Style "Position" TimePeriod "2023-07-29 09:19:01.000" "2023-07-29 10:09:38.000"
+```
+
+注意：4.2.0-alpha.1 中 Exec_Report 族命令 ACK 但不返回数据（文件输出未实现）。
+
+### InsertSegment 的 RPO 段类型
+
+`InsertSegment` 支持 RPO 段：`SetInitialState`、`FMCircumnav`、`FMW`、`Hop`、
+`PerchEqualSpacing`、`TearDrop`、`NMCircumnav`、`FollowSun`、`ExitGEO`、
+`GEORendezvousDrifting`、`GEORendezvousNolead`、`HopAndStop`、`Coast`、
+`GEOTargetDrift`、`NoncoplanarRendezvous`、`ConeApproach`、`CorridorApproach`、
+`FastRendezvous`、`FollowSunMotion`、`GEOAltDrift`、`GEODrift`、
+`GEOTargetAltDrift`、`NMCircumnavToRbar`（对应 Component 枚举 `eVASegmentRPO*`）。
+
+**示例**：
+```connect
+InsertSegment */Satellite/Satellite1 ConeApproach Segment_0
+```

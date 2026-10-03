@@ -7,7 +7,7 @@ ATK Connect 模式 — 报告执行与结果解析
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from atk import exceptions as _ex
 from atk import utils
@@ -213,6 +213,98 @@ class ReportRM:
         return ReportResult(raw, columns=columns)
 
 
+class ExecReport:
+    """
+    执行 Exec_ReportCreate / Exec_Report_RM 报告命令。
+
+    通过 :meth:`ATKConnection.exec_report_create()
+    <atk.connect.session.ATKConnection.exec_report_create>` 与
+    :meth:`ATKConnection.exec_report_rm()
+    <atk.connect.session.ATKConnection.exec_report_rm>` 使用。
+
+    示例::
+
+        atk.exec_report_create('*/Satellite/Sat1', 'Position',
+                               file='linshi.rsf',
+                               start='2023-07-29 09:19:01.000',
+                               stop='2023-07-29 10:09:38.000')
+        result = atk.exec_report_rm('*/Satellite/Sat1', 'Position',
+                                    start='2023-07-29 09:19:01.000',
+                                    stop='2023-07-29 10:09:38.000',
+                                    time_step=60)
+    """
+
+    def __init__(self, conn: "ATKConnection", obj_path: str, style: str):
+        self._conn = conn
+        self._obj_path = utils.resolve_path(obj_path)
+        self._style = style
+
+    def _options(
+        self,
+        file: str | None = None,
+        start: str | None = None,
+        stop: str | None = None,
+        time_step: float | None = None,
+    ) -> str:
+        utils.validate_time_pair(start, stop)
+        param = f' Style "{self._style}"'
+        if file:
+            param += f' File "{file}"'
+        if start:
+            param += f' TimePeriod "{start}" "{stop}"'
+        if time_step is not None:
+            param += f" TimeStep {time_step}"
+        return param
+
+    def create(
+        self,
+        file: str | None = None,
+        start: str | None = None,
+        stop: str | None = None,
+        time_step: float | None = None,
+    ) -> Any:
+        """
+        创建报告（Exec_ReportCreate）。
+
+        Parameters
+        ----------
+        file : str, optional
+            报告输出文件路径。
+        start, stop : str, optional
+            报告时间区间（必须成对出现）。
+        time_step : float, optional
+            报告时间步长。
+
+        Returns
+        -------
+        原始 ATK 响应。
+        """
+        return self._conn.send(
+            "Exec_ReportCreate", self._obj_path, self._options(file, start, stop, time_step)
+        )
+
+    def rm(
+        self,
+        start: str | None = None,
+        stop: str | None = None,
+        time_step: float | None = None,
+    ) -> ReportResult:
+        """
+        获取指定样式的报告数据（Exec_Report_RM）。
+
+        Returns
+        -------
+        ReportResult
+            解析后的报告结果。
+        """
+        raw = self._conn.send(
+            "Exec_Report_RM", self._obj_path,
+            self._options(None, start, stop, time_step),
+        )
+        columns = QuickReport._REPORT_COLUMNS.get(self._style, [])
+        return ReportResult(raw, columns=columns)
+
+
 # ---------------------------------------------------------------------------
 # 为 ATKConnection 添加便捷方法
 # ---------------------------------------------------------------------------
@@ -237,9 +329,85 @@ def _patch_connection():
     ) -> ReportResult:
         """执行 Report_RM 命令并返回解析结果。"""
         return ReportRM(self, obj_path, style, time_period).run()
-
     _s.ATKConnection.quick_report = quick_report
     _s.ATKConnection.report_rm = report_rm
+
+    def quick_report_create(self, name: str) -> Any:
+        """创建快捷报告（QuickReportCreate * "name"）。"""
+        return self.send("QuickReportCreate", "*", f'"{name}"')
+
+    def quick_report_add(
+        self,
+        name: str,
+        style: str,
+        obj_path: str,
+        from_object: str | None = None,
+    ) -> Any:
+        """
+        添加快捷报告（QuickReportAdd）。
+
+        Parameters
+        ----------
+        name : str
+            快捷报告名称。
+        style : str
+            报告样式名（如 ``"J2000 Position Velocity"``）。
+        obj_path : str
+            报告对象路径（如 ``"Satellite/Satellite1"``）。
+        from_object : str, optional
+            访问对象路径。
+        """
+        param = (
+            f'Name "{name}" Type Report Style "{style}" '
+            f"Object {obj_path}"
+        )
+        if from_object:
+            param += f" FromObject {from_object}"
+        return self.send("QuickReportAdd", "*", param)
+
+    def quick_report_list(self) -> list[str]:
+        """获取快捷报告列表（QuickReport_RM * GetList）。"""
+        return utils.result_to_list(self.send("QuickReport_RM", "*", "GetList"))
+
+    def quick_report_get(self, name: str) -> list[str]:
+        """获取快捷报告数据（QuickReport_RM * GetReport "name"）。"""
+        return utils.result_to_list(
+            self.send("QuickReport_RM", "*", f'GetReport "{name}"')
+        )
+
+    def exec_report_create(
+        self,
+        obj_path: str,
+        style: str,
+        file: str | None = None,
+        start: str | None = None,
+        stop: str | None = None,
+        time_step: float | None = None,
+    ) -> Any:
+        """创建报告（Exec_ReportCreate）。"""
+        return ExecReport(self, obj_path, style).create(
+            file=file, start=start, stop=stop, time_step=time_step
+        )
+
+    def exec_report_rm(
+        self,
+        obj_path: str,
+        style: str,
+        start: str | None = None,
+        stop: str | None = None,
+        time_step: float | None = None,
+    ) -> ReportResult:
+        """获取报告数据（Exec_Report_RM），返回解析后的 ReportResult。"""
+        return ExecReport(self, obj_path, style).rm(
+            start=start, stop=stop, time_step=time_step
+        )
+
+    _s.ATKConnection.quick_report_create = quick_report_create
+    _s.ATKConnection.quick_report_add = quick_report_add
+    _s.ATKConnection.quick_report_list = quick_report_list
+    _s.ATKConnection.quick_report_get = quick_report_get
+    _s.ATKConnection.exec_report_create = exec_report_create
+    _s.ATKConnection.exec_report_rm = exec_report_rm
 
 
 _patch_connection()
