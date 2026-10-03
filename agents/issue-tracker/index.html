@@ -1,0 +1,1124 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="ATK (Aerospace Tool Kit) Python SDK 高层次封装文档">
+      
+      
+        <meta name="author" content="ATK SDK Contributors">
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Issue tracker: GitHub - ATK Python SDK 文档</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#issue-tracker-github" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="ATK Python SDK 文档" class="md-header__button md-logo" aria-label="ATK Python SDK 文档" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ATK Python SDK 文档
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Issue tracker: GitHub
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换深色模式"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="切换深色模式" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换浅色模式"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="切换浅色模式" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ouyangjiahong26/atk-python-sdk" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ATK Python SDK 文档" class="md-nav__button md-logo" aria-label="ATK Python SDK 文档" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ATK Python SDK 文档
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ouyangjiahong26/atk-python-sdk" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    架构
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    架构
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/connect-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connect 模式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/component-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Component 模式
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/design-decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    设计决策
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    背景知识
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    背景知识
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../background/atk-object-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ATK 对象模型
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../background/time-and-units/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    时间和单位
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../background/vendored-modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vendored 模块
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    快速开始
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/orbital-mechanics-primer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    轨道力学基础
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    故障排查
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参考
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/atk-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ATK Connect 命令
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        约定
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull request 作为分诊渠道
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#issue-tracker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        当技能说"发布到 issue tracker"时
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        当技能说"获取相关工单"时
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GitHub Project
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GitHub Project">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#project-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project 与字段 ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        工作流状态迁移
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wayfinding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wayfinding 操作
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="issue-tracker-github">Issue tracker: GitHub<a class="headerlink" href="#issue-tracker-github" title="Permanent link">&para;</a></h1>
+<p>本仓库的 issue 和规格存放在 GitHub Issues 中。所有操作使用 <code>gh</code> CLI。</p>
+<h2 id="_1">约定<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>创建 issue</strong>：<code>gh issue create --title "..." --body "..."</code>。多行正文用 heredoc。</li>
+<li><strong>AI 贡献标记</strong>：AI 提交的 issue 与 PR 标题以 <code>[AI Generated][&lt;类型&gt;]</code> 开头（类型是大写标签，如 <code>[FIX]</code>、<code>[DOCS]</code>）；AI 写的评论首行用 <code>&gt; **[AI Generated]** 本评论由 AI 完成。</code> 或 <code>&gt; **[AI Assisted]** 本评论由 AI 辅助完成。</code></li>
+<li><strong>读取 issue</strong>：<code>gh issue view &lt;number&gt; --comments</code>，用 <code>jq</code> 过滤评论，同时获取标签。</li>
+<li><strong>列出 issue</strong>：<code>gh issue list --state open --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'</code>，按需加 <code>--label</code> 和 <code>--state</code> 过滤。</li>
+<li><strong>评论 issue</strong>：<code>gh issue comment &lt;number&gt; --body "..."</code></li>
+<li><strong>添加 / 移除标签</strong>：<code>gh issue edit &lt;number&gt; --add-label "..."</code> / <code>--remove-label "..."</code></li>
+<li><strong>关闭</strong>：<code>gh issue close &lt;number&gt; --comment "..."</code></li>
+</ul>
+<p>从 <code>git remote -v</code> 推导仓库，<code>gh</code> 在 clone 内运行时自动识别。</p>
+<h2 id="pull-request">Pull request 作为分诊渠道<a class="headerlink" href="#pull-request" title="Permanent link">&para;</a></h2>
+<p><strong>PR 作为请求渠道：否。</strong> <em>（如果本仓库将外部 PR 视为功能请求，改为 <code>是</code>；<code>/triage</code> 会读取此标记。）</em></p>
+<p>设为 <code>是</code> 时，PR 与 issue 走相同的标签和状态，使用 <code>gh pr</code> 等价命令：</p>
+<ul>
+<li><strong>读取 PR</strong>：<code>gh pr view &lt;number&gt; --comments</code>，<code>gh pr diff &lt;number&gt;</code> 看 diff。</li>
+<li><strong>列出待分诊的外部 PR</strong>：<code>gh pr list --state open --json number,title,body,labels,author,authorAssociation,comments</code>，只保留 <code>authorAssociation</code> 为 <code>CONTRIBUTOR</code>、<code>FIRST_TIME_CONTRIBUTOR</code> 或 <code>NONE</code> 的（去掉 <code>OWNER</code>/<code>MEMBER</code>/<code>COLLABORATOR</code>）。</li>
+<li><strong>评论 / 打标签 / 关闭</strong>：<code>gh pr comment</code>、<code>gh pr edit --add-label</code>/<code>--remove-label</code>、<code>gh pr close</code>。</li>
+</ul>
+<p>GitHub 的 issue 和 PR 共享编号空间，所以 <code>#42</code> 可能是其中任一，用 <code>gh pr view 42</code> 确认，回退到 <code>gh issue view 42</code>。</p>
+<h2 id="issue-tracker">当技能说"发布到 issue tracker"时<a class="headerlink" href="#issue-tracker" title="Permanent link">&para;</a></h2>
+<p>创建一个 GitHub issue。</p>
+<h2 id="_2">当技能说"获取相关工单"时<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>运行 <code>gh issue view &lt;number&gt; --comments</code>。</p>
+<h2 id="github-project">GitHub Project<a class="headerlink" href="#github-project" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Issue 和 PR 都加入本仓库的 GitHub Project（<a href="https://github.com/users/ouyangjiahong26/projects/8">atk-python-sdk</a>）；Project 是工作状态的来源，label 只表达分类、领域或分诊角色。</li>
+<li>使用 <code>gh project item-list 8 --owner ouyangjiahong26 --format json</code> 查询项目项，使用 <code>gh project item-edit &lt;item-id&gt; --project-id &lt;project-id&gt; --field-id &lt;field-id&gt; --single-select-option-id &lt;option-id&gt;</code> 更新字段。</li>
+<li>默认状态流转：<code>Inbox</code> → <code>Backlog</code> → <code>Ready</code> → <code>In progress</code> → <code>In review</code> → <code>Done</code> / <code>No action</code>。</li>
+<li><code>Done</code> 对应 Issue 以 <code>Completed</code> 关闭；<code>No action</code> 对应 Issue 以 <code>Not planned</code> 关闭；重开的 Issue 回到 <code>Inbox</code>。</li>
+</ul>
+<h3 id="project-id">Project 与字段 ID<a class="headerlink" href="#project-id" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Project number</td>
+<td><code>8</code></td>
+</tr>
+<tr>
+<td>Project ID</td>
+<td><code>PVT_kwHOCpw4xM4Blhtp</code></td>
+</tr>
+<tr>
+<td>Owner</td>
+<td><code>ouyangjiahong26</code>（User project）</td>
+</tr>
+<tr>
+<td>Status 字段 ID</td>
+<td><code>PVTSSF_lAHOCpw4xM4BlhtpzhkORLQ</code></td>
+</tr>
+<tr>
+<td>Priority 字段 ID</td>
+<td><code>PVTSSF_lAHOCpw4xM4BlhtpzhkORd8</code></td>
+</tr>
+<tr>
+<td>Start Date 字段 ID</td>
+<td><code>PVTF_lAHOCpw4xM4BlhtpzhkORg4</code></td>
+</tr>
+</tbody>
+</table>
+<p>Status 选项 ID：</p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>选项 ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Inbox</code></td>
+<td><code>f75ad846</code></td>
+</tr>
+<tr>
+<td><code>Backlog</code></td>
+<td><code>519e422a</code></td>
+</tr>
+<tr>
+<td><code>Ready</code></td>
+<td><code>83c14e2f</code></td>
+</tr>
+<tr>
+<td><code>In progress</code></td>
+<td><code>47fc9ee4</code></td>
+</tr>
+<tr>
+<td><code>In review</code></td>
+<td><code>ad642015</code></td>
+</tr>
+<tr>
+<td><code>Done</code></td>
+<td><code>98236657</code></td>
+</tr>
+<tr>
+<td><code>No action</code></td>
+<td><code>4159a52d</code></td>
+</tr>
+</tbody>
+</table>
+<p>Priority 选项 ID（<code>P0</code> 紧急 → <code>P3</code> 低）：</p>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>选项 ID</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>P0</code></td>
+<td><code>f2bfc03f</code></td>
+</tr>
+<tr>
+<td><code>P1</code></td>
+<td><code>7aa9a653</code></td>
+</tr>
+<tr>
+<td><code>P2</code></td>
+<td><code>9381c5c4</code></td>
+</tr>
+<tr>
+<td><code>P3</code></td>
+<td><code>29cadd71</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>Start Date</code> 为日期字段，直接用 <code>gh project item-edit --date &lt;YYYY-MM-DD&gt;</code> 更新。</p>
+<h3 id="_3">工作流状态迁移<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li>新 Issue：加入 Project，设为 <code>Inbox</code>。</li>
+<li>分诊确认但未排期：<code>Backlog</code>；可开始：<code>Ready</code>。</li>
+<li>开始实现：<code>In progress</code>；创建 PR：<code>In review</code>。</li>
+<li>PR 合并并验证完成：Issue 关闭原因为 <code>Completed</code>，Project 设为 <code>Done</code>。</li>
+<li>PR 关闭但未合并：不自动关闭 Issue 或设为 <code>No action</code>，等待维护者决定。</li>
+</ul>
+<h2 id="wayfinding">Wayfinding 操作<a class="headerlink" href="#wayfinding" title="Permanent link">&para;</a></h2>
+<p>被 <code>/wayfinder</code> 使用。<strong>地图</strong>是一个 issue，其下挂<strong>子</strong> issue 作为工单。</p>
+<ul>
+<li><strong>地图</strong>：一个带 <code>wayfinder:map</code> 标签的 issue，承载 Notes / Decisions-so-far / Fog 正文。<code>gh issue create --label wayfinder:map</code>。</li>
+<li><strong>子工单</strong>：一个 issue，作为 GitHub sub-issue 链接到地图（通过 <code>gh api</code> 调 sub-issues 端点）。在未启用 sub-issues 的地方，把子工单加到地图正文的 task list 中，并在子工单正文顶部放 <code>Part of #&lt;map&gt;</code>。标签：<code>wayfinder:&lt;type&gt;</code>（<code>research</code>/<code>prototype</code>/<code>grilling</code>/<code>task</code>）。一旦被认领，工单指派给驱动的 dev。</li>
+<li><strong>阻塞</strong>：GitHub 的<strong>原生 issue 依赖</strong>：规范的、UI 可见的表示。用 <code>gh api --method POST repos/&lt;owner&gt;/&lt;repo&gt;/issues/&lt;child&gt;/dependencies/blocked_by -F issue_id=&lt;blocker-db-id&gt;</code> 添加一条边，其中 <code>&lt;blocker-db-id&gt;</code> 是阻塞方的数字 <strong>database id</strong>（<code>gh api repos/&lt;owner&gt;/&lt;repo&gt;/issues/&lt;n&gt; --jq .id</code>，<em>不是</em> <code>#number</code> 或 <code>node_id</code>）。GitHub 报告 <code>issue_dependencies_summary.blocked_by</code>（仅未关闭的阻塞方，即实时闸门）。在依赖不可用的地方，回退到子工单正文顶部的 <code>Blocked by: #&lt;n&gt;, #&lt;n&gt;</code> 行。当所有阻塞方都关闭时，工单解除阻塞。</li>
+<li><strong>前沿查询</strong>：列出地图下未关闭的子工单（<code>gh issue list --state open</code>，范围限定到地图的 sub-issues / task list），丢弃任何有未关闭阻塞方（<code>issue_dependencies_summary.blocked_by &gt; 0</code>，或 <code>Blocked by</code> 行中的未关闭 issue）或有 assignee 的；按地图中的顺序，第一个胜出。</li>
+<li><strong>认领</strong>：<code>gh issue edit &lt;n&gt; --add-assignee @me</code>：会话的第一次写操作。</li>
+<li><strong>解决</strong>：<code>gh issue comment &lt;n&gt; --body "&lt;answer&gt;"</code>，然后 <code>gh issue close &lt;n&gt;</code>，然后在地图的 Decisions-so-far 中追加一条上下文指针（gist + 链接）。</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
