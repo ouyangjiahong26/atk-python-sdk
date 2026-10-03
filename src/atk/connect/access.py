@@ -33,31 +33,17 @@ ACCESS_RM_STYLES = frozenset({
 
 def _time_param(start: str | None, stop: str | None) -> str:
     """构造 ``TimePeriod "s" "e"`` 或 ``UseObjectTimes`` 参数片段。"""
+    utils.validate_time_pair(start, stop)
     if start:
-        if not stop:
-            raise _ex.ATKValueError(
-                "stop must be provided together with start"
-            )
         return f'TimePeriod "{start}" "{stop}"'
-    if stop:
-        raise _ex.ATKValueError(
-            "start must be provided together with stop"
-        )
     return "UseObjectTimes"
 
 
 def _interval_param(start: str | None, stop: str | None) -> str:
     """构造 ``"s" "e"`` 或 ``UseObjectTimes`` 参数片段（无 TimePeriod 前缀）。"""
+    utils.validate_time_pair(start, stop)
     if start:
-        if not stop:
-            raise _ex.ATKValueError(
-                "stop must be provided together with start"
-            )
         return f'"{start}" "{stop}"'
-    if stop:
-        raise _ex.ATKValueError(
-            "start must be provided together with stop"
-        )
     return "UseObjectTimes"
 
 

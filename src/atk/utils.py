@@ -146,6 +146,19 @@ def path_join(*parts: str) -> str:
     return joined
 
 
+def validate_time_pair(start: str | None, stop: str | None) -> None:
+    """
+    校验时间区间参数必须成对提供（要么都给，要么都不给）。
+
+    单传其一或二者类型不符时抛 ``ATKValueError``。
+    """
+    if bool(start) != bool(stop):
+        raise ATKValueError(
+            "start and stop must be provided together "
+            f"(start={start!r}, stop={stop!r})"
+        )
+
+
 def path_parent(path: str) -> str:
     """返回父路径（最后一个斜杠之前的所有内容）。"""
     if "/" not in path:

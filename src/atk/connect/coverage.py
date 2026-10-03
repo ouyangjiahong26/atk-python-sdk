@@ -257,6 +257,7 @@ class CoverageBuilder:
                 f"Unknown Cov_RM style {style!r}. "
                 f"Valid styles: {sorted(COV_RM_STYLES)}"
             )
+        utils.validate_time_pair(start, stop)
         interval = f'"{start}" "{stop}"' if start else "UseObjectTimes"
         result = self._conn.send(
             "Cov_RM",

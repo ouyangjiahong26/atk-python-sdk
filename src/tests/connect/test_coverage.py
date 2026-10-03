@@ -132,3 +132,25 @@ class TestCoverageMultiBuilder:
 
         with pytest.raises(atk_exc.ATKValueError):
             CoverageMultiBuilder(mock_conn).add_assets()
+
+
+class TestTimePairValidation:
+    """时间区间参数成对校验（统一 utils.validate_time_pair 语义）。"""
+
+    def test_access_rm_rejects_half_pair(self, mock_conn):
+        from atk.connect.coverage import CoverageBuilder
+
+        builder = CoverageBuilder(mock_conn, "Cov1")
+        with pytest.raises(atk_exc.ATKValueError):
+            builder.access_rm("Coverage", start="s")
+        with pytest.raises(atk_exc.ATKValueError):
+            builder.access_rm("Coverage", stop="e")
+
+    def test_access_rm_use_object_times_when_both_absent(self, mock_conn):
+        from atk.connect.coverage import CoverageBuilder
+
+        CoverageBuilder(mock_conn, "Cov1").access_rm("Coverage")
+        assert mock_conn.calls[-1] == (
+            "Cov_RM", "*/CoverageDefinition/Cov1",
+            ' Access Compute "Coverage" UseObjectTimes',
+        )

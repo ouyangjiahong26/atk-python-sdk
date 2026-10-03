@@ -147,3 +147,24 @@ class TestResultParsing:
         result = MockResult()
         with pytest.raises(atk_exc.ATKValueError):
             utils.result_to_dict(result, ["x", "y", "z"])
+
+
+class TestValidateTimePair:
+    """validate_time_pair 的成对校验语义。"""
+
+    def test_both_none_ok(self):
+        from atk.utils import validate_time_pair
+        validate_time_pair(None, None)
+
+    def test_both_present_ok(self):
+        from atk.utils import validate_time_pair
+        validate_time_pair("s", "e")
+
+    def test_half_pair_raises(self):
+        import pytest
+        from atk import exceptions as atk_exc
+        from atk.utils import validate_time_pair
+        with pytest.raises(atk_exc.ATKValueError):
+            validate_time_pair("s", None)
+        with pytest.raises(atk_exc.ATKValueError):
+            validate_time_pair(None, "e")

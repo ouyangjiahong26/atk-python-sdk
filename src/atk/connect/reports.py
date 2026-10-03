@@ -246,10 +246,7 @@ class ExecReport:
         stop: str | None = None,
         time_step: float | None = None,
     ) -> str:
-        if bool(start) != bool(stop):
-            raise _ex.ATKValueError(
-                "start and stop must be provided together"
-            )
+        utils.validate_time_pair(start, stop)
         param = f' Style "{self._style}"'
         if file:
             param += f' File "{file}"'
