@@ -175,6 +175,88 @@ class ATKConnection:
         data = utils.result_to_list(result)
         return " ".join(data)
 
+    def wait_ready(
+        self,
+        timeout: float = 60.0,
+        interval: float = 1.0,
+    ) -> bool:
+        """
+        等待 ATK 命令层就绪（启动加载完成）。
+
+        ATK 启动后端口即监听、基础命令可用，但启动加载完成前部分命令
+        会返回 NACK。本方法轮询 ``AllInstanceNames`` 直到连续成功，
+        用于自动化脚本在启动后等待。
+
+        Parameters
+        ----------
+        timeout : float
+            总超时（秒）。
+        interval : float
+            轮询间隔（秒）。
+
+        Returns
+        -------
+        bool
+            超时未就绪返回 False。
+        """
+        import time as _time
+
+        deadline = _time.monotonic() + timeout
+        while _time.monotonic() < deadline:
+            try:
+                self.send_str("AllInstanceNames", "/")
+                return True
+            except _ex.ATKError:
+                _time.sleep(interval)
+        return False
+
+    def send_retry(
+        self,
+        command: str,
+        obj_path: str = "*",
+        param: str = "",
+        retries: int = 5,
+        interval: float = 0.2,
+    ) -> Any:
+        """
+        带间隔与重试的命令发送。
+
+        ATK Connect 服务端对命令速率敏感（连发可能 NACK），
+        启动加载完成前部分命令也会 NACK。本方法在每次发送前等待
+        ``interval`` 秒，NACK 时按 ``retries`` 重试，适用于自动化
+        脚本与启动初期。
+
+        Parameters
+        ----------
+        command, obj_path, param : str
+            同 :meth:`send`。
+        retries : int
+            NACK 后的最大重试次数。
+        interval : float
+            发送间隔与重试退避（秒）。
+
+        Returns
+        -------
+            同 :meth:`send`。
+
+        Raises
+        ------
+        ATKCommandError
+            重试耗尽仍失败时抛出最后一次的错误。
+        """
+        import time as _time
+
+        last_exc: Exception | None = None
+        for _ in range(retries + 1):
+            _time.sleep(interval)
+            try:
+                return self.send(command, obj_path, param)
+            except _ex.ATKCommandError as exc:
+                last_exc = exc
+                _time.sleep(interval)
+        assert last_exc is not None
+        raise last_exc
+
     def close(self) -> None:
         """关闭到 ATK 的 TCP 连接。"""
         if self._connected:

@@ -4,10 +4,9 @@ ATK Connect 模式 — 覆盖分析辅助工具
 提供流式 API，用于创建覆盖定义、添加资产/地面站，
 以及计算访问统计。
 """
-
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from atk import exceptions as _ex
 from atk import utils
@@ -15,6 +14,24 @@ from atk import utils
 if TYPE_CHECKING:
     from atk.connect.session import ATKConnection
 
+# Cov_RM 的 <ReportStyle> 合法取值（见帮助文档 Cov_RM Access 页）
+COV_RM_STYLES = frozenset({
+    "Coverage",
+    "Figure Of Merit",
+    "Satisfaction",
+    "Daily Coverage",
+    "Coverage Gaps",
+})
+
+
+# Cov_RM 的 <ReportStyle> 合法取值（见帮助文档 Cov_RM Access 页）
+COV_RM_STYLES = frozenset({
+    "Coverage",
+    "Figure Of Merit",
+    "Satisfaction",
+    "Daily Coverage",
+    "Coverage Gaps",
+})
 
 class CoverageBuilder:
     """
@@ -167,6 +184,125 @@ class CoverageBuilder:
         raw = self._conn.send("Cov", self._path, f" Compute {time_period}")
         return CoverageStats(raw)
 
+    # ------------------------------------------------------------------
+    # 4.2 新增：覆盖时间区间 / 覆盖计算 / 报告
+    # ------------------------------------------------------------------
+
+    def set_interval(self, start: str, stop: str) -> "CoverageBuilder":
+        """
+        设置对象覆盖性计算的时间区间。
+
+        对应命令 ``Cov <CovDefnObjectPath> Interval "<Start>" "<Stop>"``。
+
+        Parameters
+        ----------
+        start, stop : str
+            时间区间（ATK 时间格式）。
+
+        Returns
+        -------
+        self
+        """
+        self._conn.send(
+            "Cov", self._path, f' Interval "{start}" "{stop}"'
+        )
+        return self
+
+    def access_compute(self, start: str, stop: str) -> "CoverageBuilder":
+        """
+        计算对象覆盖性（清空之前结果后重新计算）。
+
+        对应命令 ``Cov <ObjectPath> Access Compute "<Start>" "<Stop>"``。
+
+        Returns
+        -------
+        self
+        """
+        self._conn.send(
+            "Cov", self._path, f' Access Compute "{start}" "{stop}"'
+        )
+        return self
+
+    def access_clear(self) -> "CoverageBuilder":
+        """
+        清除对象覆盖定义计算。
+
+        对应命令 ``Cov <ObjectPath> Access Clear``。
+
+        Returns
+        -------
+        self
+        """
+        self._conn.send("Cov", self._path, " Access Clear")
+        return self
+
+    def access_rm(
+        self,
+        style: str,
+        start: str | None = None,
+        stop: str | None = None,
+    ) -> list[str]:
+        """
+        获取覆盖性报告。
+
+        对应命令 ``Cov_RM <ObjectPath> Access Compute "<ReportStyle>"
+        [{TimeIntervals} | UseObjectTimes]``。
+
+        Parameters
+        ----------
+        style : str
+            报告样式，合法取值见 :data:`COV_RM_STYLES`
+            （``"Coverage"``、``"Figure Of Merit"``、``"Satisfaction"``、
+            ``"Daily Coverage"``、``"Coverage Gaps"``）。
+        start, stop : str, optional
+            时间区间；都省略时使用对象自身时间。
+
+        Returns
+        -------
+        list[str]
+            解析后的报告数据行。
+        """
+        if style not in COV_RM_STYLES:
+            raise _ex.ATKValueError(
+                f"Unknown Cov_RM style {style!r}. "
+                f"Valid styles: {sorted(COV_RM_STYLES)}"
+            )
+        interval = f'"{start}" "{stop}"' if start else "UseObjectTimes"
+        result = self._conn.send(
+            "Cov_RM",
+            self._path,
+            f' Access Compute "{style}" {interval}',
+        )
+        return utils.result_to_list(result)
+
+    def fom_rm(
+        self,
+        fom_type: str,
+        params: str = "",
+    ) -> list[str]:
+        """
+        返回覆盖品质参数（FOM）计算结果。
+
+        对应命令 ``Cov_RM <CovDefnObjectPath> FOMDefine Definition
+        <FOMType> {Parameters}``。
+
+        Parameters
+        ----------
+        fom_type : str
+            FOM 类型（如 ``"CoverageTime"``、``"AccessDuration"``、
+            ``"RevisitTime"``、``"NAsset"``）。
+        params : str, optional
+            FOM 参数（如 ``"Compute Total"``、``"Compute maximum"``）。
+
+        Returns
+        -------
+        list[str]
+            解析后的品质参数数据行。
+        """
+        param = f"FOMDefine Definition {fom_type} {params}".strip()
+        result = self._conn.send("Cov_RM", self._path, f" {param}")
+        return utils.result_to_list(result)
+
     def __repr__(self) -> str:
         return f"<CoverageBuilder name={self._name!r}>"
 
@@ -257,6 +393,110 @@ class CoverageStats:
         )
 
 
+class CoverageMultiBuilder:
+    """
+    Connect 模式下批量覆盖性分析（CovMulti）的"先配置后计算"框架。
+
+    通过 ``atk.coverage_multi()`` 创建。
+
+    工作流：:meth:`add_assets` 指定覆盖资产 → :meth:`add_objects`
+    指定访问对象 → :meth:`compute` 执行批量计算 →
+    :meth:`multi_fom_rm` 获取品质参数。
+
+    示例::
+
+        multi = atk.coverage_multi()
+        multi.add_assets('*/Satellite/Sat1/Sensor/Sensor1')
+        multi.add_objects('*/Facility/Target1', '*/Facility/Target2')
+        multi.compute('26 Sep 2035 12:00:00.00', '28 Sep 2035 12:00:00.00')
+        rows = multi.multi_fom_rm('RevisitTime', 'Compute maximum')
+    """
+
+    def __init__(self, conn: "ATKConnection"):
+        self._conn = conn
+
+    def add_assets(self, *paths: str) -> "CoverageMultiBuilder":
+        """
+        覆盖性选择多个目标对象（资产）。
+
+        对应命令 ``CovMulti / Assets <AssetObjectPath>...``。
+
+        Parameters
+        ----------
+        *paths : str
+            资产对象路径，可传多个。
+
+        Returns
+        -------
+        self
+        """
+        if not paths:
+            raise _ex.ATKValueError("add_assets requires at least one path")
+        joined = " ".join(utils.resolve_path(p) for p in paths)
+        self._conn.send("CovMulti", "/", f" Assets {joined}")
+        return self
+
+    def add_objects(self, *paths: str) -> "CoverageMultiBuilder":
+        """
+        覆盖性选择多个访问对象。
+
+        对应命令 ``CovMulti / Objects <CovObjectPath>...``。
+
+        Returns
+        -------
+        self
+        """
+        if not paths:
+            raise _ex.ATKValueError("add_objects requires at least one path")
+        joined = " ".join(utils.resolve_path(p) for p in paths)
+        self._conn.send("CovMulti", "/", f" Objects {joined}")
+        return self
+
+    def compute(self, start: str, stop: str) -> Any:
+        """
+        清空并计算对象覆盖性。
+
+        对应命令 ``CovMulti / Access Compute "<Start>" "<Stop>"``。
+
+        Returns
+        -------
+        原始 ATK 响应。
+        """
+        return self._conn.send(
+            "CovMulti", "/", f' Access Compute "{start}" "{stop}"'
+        )
+
+    def multi_fom_rm(
+        self,
+        fom_type: str,
+        params: str = "",
+    ) -> list[str]:
+        """
+        返回批量覆盖品质参数。
+
+        对应命令 ``CovMulti_RM / MultiFOMDefine Definition
+        <FOMType> {Parameters}``。
+
+        Parameters
+        ----------
+        fom_type : str
+            FOM 类型（如 ``"RevisitTime"``、``"CoverageTime"``）。
+        params : str, optional
+            FOM 参数（如 ``"Compute maximum"``）。
+
+        Returns
+        -------
+        list[str]
+            解析后的品质参数数据行。
+        """
+        param = f"MultiFOMDefine Definition {fom_type} {params}".strip()
+        result = self._conn.send("CovMulti_RM", "/", f" {param}")
+        return utils.result_to_list(result)
+
+    def __repr__(self) -> str:
+        return "<CoverageMultiBuilder>"
+
+
 # ---------------------------------------------------------------------------
 # 将 create_coverage() 添加到 ATKConnection
 # ---------------------------------------------------------------------------
@@ -271,6 +511,7 @@ def _patch_connection():
         return builder
 
     _s.ATKConnection.create_coverage = create_coverage
+    _s.ATKConnection.coverage_multi = lambda self: CoverageMultiBuilder(self)
 
 
 _patch_connection()

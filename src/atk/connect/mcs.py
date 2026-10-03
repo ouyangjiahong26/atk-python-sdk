@@ -4,7 +4,10 @@ ATK Connect 模式 — MCS（任务控制序列）构建器
 提供流式 API，通过 Connect 命令构建 Astrogator MCS 段序列。
 """
 
+
 from __future__ import annotations
+
+import warnings
 
 from typing import TYPE_CHECKING
 
@@ -13,6 +16,42 @@ from atk import utils
 
 if TYPE_CHECKING:
     from atk.connect.session import ATKConnection
+
+
+# MCS 已知段类型：常规段 + RPO 段（来自 Component 枚举 eVASegmentRPO 的类型名，
+# 去掉 eVASegmentRPO 前缀）。Connect 侧段类型以字符串出现、无枚举可查，
+# 传入未知类型时仅告警并原样透传。
+_RPO_SEGMENT_TYPES = frozenset({
+    "SetInitialState",
+    "FMCircumnav",
+    "FMW",
+    "Hop",
+    "PerchEqualSpacing",
+    "TearDrop",
+    "NMCircumnav",
+    "FollowSun",
+    "ExitGEO",
+    "GEORendezvousDrifting",
+    "GEORendezvousNolead",
+    "HopAndStop",
+    "Coast",
+    "GEOTargetDrift",
+    "NoncoplanarRendezvous",
+    "ConeApproach",
+    "CorridorApproach",
+    "FastRendezvous",
+    "FollowSunMotion",
+    "GEOAltDrift",
+    "GEODrift",
+    "GEOTargetAltDrift",
+    "NMCircumnavToRbar",
+})
+_KNOWN_SEGMENT_TYPES = frozenset({
+    "Initial_State",
+    "Propagate",
+    "ImpulsiveBurn",
+    "TargetSequence",
+}) | _RPO_SEGMENT_TYPES
 
 
 class McsBuilder:
@@ -238,6 +277,45 @@ class McsBuilder:
         self._conn.send("InsertSegment", self._sat_path, f' TargetSequence Segment_{idx}')
         self._set_str(seg, "Endpoint", endpoint_path)
         self._set(seg, "Tolerance", str(tolerance))
+        return self
+
+    def insert_segment(
+        self,
+        segment_type: str,
+        name: str | None = None,
+    ) -> "McsBuilder":
+        """
+        插入任意类型的 MCS 段（4.2 新增，支持 RPO 段）。
+
+        对应命令 ``InsertSegment <SatPath> <SegmentType> <SegName>``。
+        段属性需随后通过 :meth:`ATKConnection.send` 的 SetValue 命令设置。
+
+        Parameters
+        ----------
+        segment_type : str
+            段类型名。已知类型见模块常量 ``_KNOWN_SEGMENT_TYPES``
+            （含 RPO 段：``"ConeApproach"``、``"CorridorApproach"``、
+            ``"TearDrop"``、``"FastRendezvous"``、``"NMCircumnav"`` 等）；
+            未识别的类型仅告警并原样透传。
+        name : str, optional
+            段名；缺省沿用 ``Segment_{i}`` 自动编号。
+
+        Returns
+        -------
+        self
+        """
+        idx = self._seg_index
+        self._seg_index += 1
+        seg_name = name if name is not None else f"Segment_{idx}"
+        if segment_type not in _KNOWN_SEGMENT_TYPES:
+            warnings.warn(
+                f"Unknown MCS segment type {segment_type!r}; sending as-is. "
+                f"Known types include: {sorted(_KNOWN_SEGMENT_TYPES)[:8]} ...",
+                stacklevel=2,
+            )
+        self._conn.send(
+            "InsertSegment", self._sat_path, f" {segment_type} {seg_name}"
+        )
         return self
 
     # ------------------------------------------------------------------
