@@ -34,7 +34,7 @@ jobs:
       # 推送版本提交与 tag，并创建带 CHANGELOG 的 GitHub Release
       - name: 语义化版本发布
         id: release
-        uses: python-semantic-release/python-semantic-release@v9.21.0
+        uses: python-semantic-release/python-semantic-release@v10.7.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
