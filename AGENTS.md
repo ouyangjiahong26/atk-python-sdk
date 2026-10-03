@@ -245,3 +245,11 @@ ATK Python SDK 通过两种相互独立的模式封装 ATK（Aerospace Tool Kit�
 - **零运行时依赖**：SDK 不依赖任何 pip 包（pandas 支持是可选的运行时导入）
 - **单元测试 mock SWIG**：所有测试使用 `unittest.mock.MagicMock` 模拟原生绑定 — 运行测试无需安装 ATK
 - **文档使用中文**：`docs/`、`README.md`、注释与提交信息均为中文
+
+## Agent skills
+
+工程技能的 harness 无关配置在 `docs/agents/`，相关技能运行前先读对应文件：
+
+- `docs/agents/issue-tracker.md` — GitHub issue / PR / Project 的操作约定与 Project 8 的字段、选项 ID（`/github-project`、`/open-pr`、`/merge-pr`、`/triage` 等读取）
+- `docs/agents/triage-labels.md` — 分诊角色到仓库标签的映射（`/triage` 读取）
+- `docs/agents/domain.md` — `CONTEXT.md` 与 ADR 的探索约定（探索与架构类技能读取）
